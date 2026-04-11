@@ -16,6 +16,14 @@ export const metadata: Metadata = {
   title: "Todo Card | HNG-14 Stage 0",
   description:
     "A testable, accessible, & responsive Todo Task Card built for HNG 14 Stage 0",
+
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+  },
+
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({
