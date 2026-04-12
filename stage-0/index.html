@@ -4,6 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Todo Card | HNG Stage 0</title>
+    <link rel="icon" href="./favicon.ico" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./favicon-16x16.png"
+    />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <link rel="manifest" href="./site.webmanifest" />
 
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -110,6 +125,7 @@
         <button
           data-testid="test-todo-edit-button"
           id="edit-btn"
+          aria-label="Edit task"
           class="flex-1 rounded-md border px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500"
         >
           Edit
@@ -118,6 +134,7 @@
         <button
           data-testid="test-todo-delete-button"
           id="delete-btn"
+          aria-label="Delete task"
           class="flex-1 rounded-md border border-red-300 px-4 py-2 text-sm text-red-700 hover:bg-red-50 focus:ring-2 focus:ring-red-500"
         >
           Delete
