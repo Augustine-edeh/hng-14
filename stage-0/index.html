@@ -63,22 +63,28 @@
 
       <!-- Priority + Status -->
       <div class="mb-4 flex flex-wrap items-center gap-2">
-        <span
-          data-testid="test-todo-priority"
-          id="priority"
-          class="inline-block rounded-full border px-3 py-1 text-xs font-medium bg-red-100 text-red-800 border-red-300"
-          aria-label="Priority: High"
-        >
-          High
-        </span>
+        <div class="text-xs">
+          Priority:
+          <span
+            data-testid="test-todo-priority"
+            id="priority"
+            class="inline-block rounded-full border px-3 py-1 text-xs font-medium bg-red-100 text-red-800 border-red-300"
+            aria-label="Priority: High"
+          >
+            High
+          </span>
+        </div>
 
-        <span
-          data-testid="test-todo-status"
-          id="status"
-          class="text-xs font-medium text-blue-700"
-        >
-          In Progress
-        </span>
+        <div class="text-xs">
+          Status:
+          <span
+            data-testid="test-todo-status"
+            id="status"
+            class="inline-block rounded-full border px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 border-blue-300"
+          >
+            In Progress
+          </span>
+        </div>
       </div>
 
       <!-- Time -->
@@ -108,6 +114,12 @@
             class="inline-block rounded-full bg-gray-100 px-2.5 py-1 text-xs text-gray-700"
           >
             #work
+          </span>
+          <span
+            data-testid="test-todo-tag-frontend"
+            class="inline-block rounded-full bg-gray-100 px-2.5 py-1 text-xs text-gray-700"
+          >
+            #frontend
           </span>
         </li>
         <li>

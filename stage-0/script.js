@@ -1,6 +1,6 @@
 const checkbox = document.getElementById("todo-checkbox");
 const title = document.getElementById("todo-title");
-const status = document.getElementById("status");
+const todoStatus = document.getElementById("status");
 const dueDateEl = document.getElementById("due-date");
 const timeRemainingEl = document.getElementById("time-remaining");
 
@@ -56,12 +56,14 @@ setInterval(() => {
 checkbox.addEventListener("change", (e) => {
   if (e.target.checked) {
     title.classList.add("line-through", "text-gray-500");
-    status.textContent = "Done";
-    status.className = "text-xs font-medium text-green-700";
+    todoStatus.textContent = "Done";
+    todoStatus.className =
+      "inline-block rounded-full border px-3 py-1 text-xs font-medium bg-green-100 text-green-800 border-green-300";
   } else {
     title.classList.remove("line-through", "text-gray-500");
-    status.textContent = "In Progress";
-    status.className = "text-xs font-medium text-blue-700";
+    todoStatus.textContent = "In Progress";
+    todoStatus.className =
+      "inline-block rounded-full border px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 border-blue-300";
   }
 });
 
