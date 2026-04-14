@@ -46,13 +46,14 @@
     <main class="max-w-2xl mx-auto">
       <article
         data-testid="test-todo-card"
-        class="priority-high bg-white rounded-lg shadow-md p-6 mb-6"
+        class="priority-high bg-white rounded-lg shadow-md p-6 mb-6 hover:shadow-xl transition-shadow duration-300"
       >
         <!-- Header Section -->
-        <div class="flex items-start justify-between mb-4 gap-4">
+        <div class="flex flex-col items-start justify-between mb-4 gap-4">
           <div class="flex items-start gap-3 flex-1">
             <!-- Checkbox Toggle -->
             <input
+              id="todo-checkbox"
               type="checkbox"
               data-testid="test-todo-complete-toggle"
               class="mt-1 h-5 w-5 cursor-pointer accent-blue-500"
@@ -61,12 +62,14 @@
 
             <!-- Main Content -->
             <div class="flex-1 min-w-0">
-              <h3
-                data-testid="test-todo-title"
-                class="text-xl font-semibold text-gray-900 mb-2 break-words"
-              >
-                Build Advanced Todo Card
-              </h3>
+              <label for="todo-checkbox" class="cursor-pointer">
+                <h3
+                  data-testid="test-todo-title"
+                  class="text-xl font-semibold text-gray-900 mb-2 break-words"
+                >
+                  Build Advanced Todo Card
+                </h3>
+              </label>
 
               <!-- Priority Indicator -->
               <div class="flex items-center gap-2 mb-3">
@@ -187,7 +190,7 @@
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex gap-2">
+          <div class="flex gap-2 w-full justify-end">
             <button
               data-testid="test-todo-edit-button"
               class="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium"
