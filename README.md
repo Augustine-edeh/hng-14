@@ -32,7 +32,7 @@ An enhanced Todo Card with:
 
 ### 🔗 Live URL
 
-Coming soon
+https://augustine-hng-14-stage-1a.vercel.app/
 
 ### 📁 Code
 
