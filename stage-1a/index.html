@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Todo Card</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      [aria-expanded="true"] ~ [data-testid="test-todo-collapsible-section"] {
+        display: block;
+      }
+      [aria-expanded="false"] ~ [data-testid="test-todo-collapsible-section"] {
+        display: none;
+      }
+      .priority-high {
+        border-left: 4px solid #ef4444;
+      }
+      .priority-medium {
+        border-left: 4px solid #f59e0b;
+      }
+      .priority-low {
+        border-left: 4px solid #10b981;
+      }
+      .overdue {
+        background-color: #fee2e2;
+      }
+      .completed {
+        opacity: 0.6;
+      }
+      .completed [data-testid="test-todo-title"] {
+        text-decoration: line-through;
+      }
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: 2px solid #3b82f6;
+        outline-offset: 2px;
+      }
+      button:focus {
+        outline: 2px solid #3b82f6;
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 p-4 md:p-8">
+    <main class="max-w-2xl mx-auto">
+      <article
+        data-testid="test-todo-card"
+        class="priority-high bg-white rounded-lg shadow-md p-6 mb-6"
+      >
+        <!-- Header Section -->
+        <div class="flex items-start justify-between mb-4 gap-4">
+          <div class="flex items-start gap-3 flex-1">
+            <!-- Checkbox Toggle -->
+            <input
+              type="checkbox"
+              data-testid="test-todo-complete-toggle"
+              class="mt-1 h-5 w-5 cursor-pointer accent-blue-500"
+              aria-label="Mark todo as complete"
+            />
+
+            <!-- Main Content -->
+            <div class="flex-1 min-w-0">
+              <h3
+                data-testid="test-todo-title"
+                class="text-xl font-semibold text-gray-900 mb-2 break-words"
+              >
+                Build Advanced Todo Card
+              </h3>
+
+              <!-- Priority Indicator -->
+              <div class="flex items-center gap-2 mb-3">
+                <span
+                  data-testid="test-todo-priority-indicator"
+                  class="inline-block h-3 w-3 rounded-full bg-red-500"
+                  title="High priority"
+                ></span>
+                <span
+                  data-testid="test-todo-priority"
+                  class="text-sm font-medium text-gray-700"
+                >
+                  High
+                </span>
+              </div>
+
+              <!-- Status Control -->
+              <div class="flex items-center gap-2 mb-3">
+                <label
+                  for="status-control"
+                  class="text-sm font-medium text-gray-700"
+                  >Status:</label
+                >
+                <select
+                  id="status-control"
+                  data-testid="test-todo-status-control"
+                  class="text-sm px-2 py-1 border border-gray-300 rounded cursor-pointer"
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Done">Done</option>
+                </select>
+              </div>
+
+              <!-- Status Display -->
+              <div class="mb-3">
+                <span
+                  data-testid="test-todo-status"
+                  class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 text-sm rounded-full"
+                >
+                  In Progress
+                </span>
+              </div>
+
+              <!-- Due Date and Time Remaining -->
+              <div class="space-y-2 mb-3">
+                <time
+                  data-testid="test-todo-due-date"
+                  class="block text-sm text-gray-600"
+                >
+                  Due: 2025-12-20
+                </time>
+                <div
+                  data-testid="test-todo-time-remaining"
+                  aria-live="polite"
+                  class="text-sm text-gray-600"
+                >
+                  Due in 221 days
+                </div>
+                <div
+                  data-testid="test-todo-overdue-indicator"
+                  class="hidden text-sm text-red-600 font-semibold"
+                >
+                  Overdue
+                </div>
+              </div>
+
+              <!-- Description -->
+              <p
+                data-testid="test-todo-description"
+                class="text-gray-700 mb-3 break-words"
+              >
+                Create a production-quality todo card with HTML, Tailwind CSS,
+                and vanilla JavaScript including edit mode, status control,
+                priority indicator, expand/collapse, and time management
+                features.
+              </p>
+
+              <!-- Expand/Collapse Toggle -->
+              <button
+                data-testid="test-todo-expand-toggle"
+                aria-expanded="false"
+                aria-controls="details-section"
+                class="text-sm text-blue-600 hover:text-blue-700 font-medium mb-3"
+              >
+                Show Details ▼
+              </button>
+
+              <!-- Collapsible Section -->
+              <div
+                data-testid="test-todo-collapsible-section"
+                id="details-section"
+                class="hidden mb-3 p-3 bg-gray-50 rounded border border-gray-200"
+              >
+                <p class="text-sm text-gray-600 mb-2">
+                  <strong>Created:</strong> 2024-12-15
+                </p>
+                <p class="text-sm text-gray-600">
+                  <strong>Last Updated:</strong> 2024-12-20
+                </p>
+              </div>
+
+              <!-- Tags -->
+              <div class="flex flex-wrap gap-2 mb-4">
+                <span
+                  data-testid="test-todo-tags"
+                  class="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
+                >
+                  Development
+                </span>
+                <span
+                  class="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
+                >
+                  High Priority
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex gap-2">
+            <button
+              data-testid="test-todo-edit-button"
+              class="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium"
+              aria-label="Edit todo"
+            >
+              Edit
+            </button>
+            <button
+              data-testid="test-todo-delete-button"
+              class="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm font-medium"
+              aria-label="Delete todo"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <!-- Edit Form (Hidden by default) -->
+        <form
+          data-testid="test-todo-edit-form"
+          class="hidden mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200"
+        >
+          <h4 class="text-lg font-semibold mb-4">Edit Todo</h4>
+
+          <div class="mb-4">
+            <label
+              for="edit-title"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Title
+            </label>
+            <input
+              id="edit-title"
+              type="text"
+              data-testid="test-todo-edit-title-input"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              value="Build Advanced Todo Card"
+            />
+          </div>
+
+          <div class="mb-4">
+            <label
+              for="edit-description"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Description
+            </label>
+            <textarea
+              id="edit-description"
+              data-testid="test-todo-edit-description-input"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg min-h-24"
+            >
+Create a production-quality todo card with HTML, Tailwind CSS, and vanilla JavaScript including edit mode, status control, priority indicator, expand/collapse, and time management features.</textarea
+            >
+          </div>
+
+          <div class="mb-4">
+            <label
+              for="edit-priority"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Priority
+            </label>
+            <select
+              id="edit-priority"
+              data-testid="test-todo-edit-priority-select"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg"
+            >
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High" selected>High</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label
+              for="edit-due-date"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Due Date
+            </label>
+            <input
+              id="edit-due-date"
+              type="date"
+              data-testid="test-todo-edit-due-date-input"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              value="2025-12-20"
+            />
+          </div>
+
+          <div class="flex gap-3">
+            <button
+              type="submit"
+              data-testid="test-todo-save-button"
+              class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 font-medium"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              data-testid="test-todo-cancel-button"
+              class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 font-medium"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </article>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
