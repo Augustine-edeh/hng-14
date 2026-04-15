@@ -264,11 +264,30 @@ statusControl.addEventListener("change", () => {
   updateUI();
 });
 
-// Expand/Collapse toggle
+// // Expand/Collapse toggle
+// expandToggle.addEventListener("click", () => {
+//   const isExpanded = expandToggle.getAttribute("aria-expanded") === "true";
+//   expandToggle.setAttribute("aria-expanded", !isExpanded);
+//   expandToggle.textContent = isExpanded ? "Show Details ▼" : "Hide Details ▲";
+// });
+
+// const expandToggle = document.querySelector(
+//   '[data-testid="test-todo-expand-toggle"]',
+// );
+const description = document.getElementById("todo-description");
+
 expandToggle.addEventListener("click", () => {
   const isExpanded = expandToggle.getAttribute("aria-expanded") === "true";
+
   expandToggle.setAttribute("aria-expanded", !isExpanded);
-  expandToggle.textContent = isExpanded ? "Show Details ▼" : "Hide Details ▲";
+
+  if (isExpanded) {
+    description.classList.add("line-clamp-2");
+    expandToggle.textContent = "Show more";
+  } else {
+    description.classList.remove("line-clamp-2");
+    expandToggle.textContent = "Show less";
+  }
 });
 
 // Delete button
