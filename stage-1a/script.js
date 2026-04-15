@@ -214,6 +214,7 @@ saveButton.addEventListener("click", (e) => {
   deleteButton.classList.remove("hidden");
 
   updateUI();
+  checkIfClamped();
 });
 
 cancelButton.addEventListener("click", () => {
@@ -311,6 +312,16 @@ editForm.addEventListener("keydown", (e) => {
   }
 });
 
+function checkIfClamped() {
+  const isOverflowing = description.scrollHeight > description.clientHeight;
+
+  if (!isOverflowing) {
+    expandToggle.classList.add("hidden");
+  } else {
+    expandToggle.classList.remove("hidden");
+  }
+}
+
 // Initialize time updates
 function startTimeUpdates() {
   updateTimeRemaining();
@@ -323,6 +334,7 @@ function startTimeUpdates() {
 document.addEventListener("DOMContentLoaded", () => {
   updateUI();
   startTimeUpdates();
+  checkIfClamped();
 });
 
 // Cleanup on page unload
