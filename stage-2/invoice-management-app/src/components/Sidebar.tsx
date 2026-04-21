@@ -13,7 +13,7 @@ export function Sidebar({ className }: { className?: string }) {
   return (
     <div
       className={clsx(
-        "w-full md:w-24 flex md:flex-col justify-between md:rounded-r-[20px] bg-invoice-sidebar-light dark:bg-invoice-sidebar-dark",
+        "w-full md:w-24 flex md:flex-col justify-between md:rounded-r-[20px] bg-invoice-sidebar-light dark:bg-invoice-sidebar-dark z-50",
         className,
       )}
     >
