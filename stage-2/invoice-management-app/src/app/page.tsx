@@ -62,9 +62,11 @@ export default function Home() {
               <FilterBar activeFilter={filter} onFilterChange={setFilter} />
               <Link
                 href="/invoices/new"
-                className="btn-primary flex items-center justify-center gap-2 whitespace-nowrap"
+                className="btn-primary flex items-center justify-center gap-2 whitespace-nowrap rounded-[24px] p-1.5 pr-3.5 w-fit"
               >
-                <Plus size={20} />
+                <div className="bg-white size-8 grid place-items-center rounded-full">
+                  <Plus size={10} className="size-5 text-primary" />
+                </div>
                 <span className="hidden sm:inline">New Invoice</span>
                 <span className="sm:hidden">New</span>
               </Link>
