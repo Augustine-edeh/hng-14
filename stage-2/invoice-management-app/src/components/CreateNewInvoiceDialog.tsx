@@ -47,6 +47,7 @@ export function CreateNewInvoiceDialog({
     top-0
     left-0
     md:ml-20
+    mt-10 sm:mt-0
     h-screen
     w-full
     max-w-none
@@ -54,7 +55,7 @@ export function CreateNewInvoiceDialog({
     translate-x-0
     translate-y-0
     p-0 pl-5
-    rounded-r-[20px]
+    rounded-none md:rounded-r-[20px]
     bg-white dark:bg-invoice-bg-dark
     overflow-y-auto
     shadow-xl
