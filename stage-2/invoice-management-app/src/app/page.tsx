@@ -9,6 +9,8 @@ import { FilterBar } from "@/components/FilterBar";
 import { InvoiceCard } from "@/components/InvoiceCard";
 import { EmptyState } from "@/components/EmptyState";
 import { Plus } from "lucide-react";
+import { CreateNewInvoiceDialog } from "@/components/CreateNewInvoiceDialog";
+import NewInvoiceButton from "@/components/NewInvoiceButton";
 
 export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
@@ -23,6 +25,8 @@ export default function Home() {
   );
 
   const filteredInvoices = getFilteredInvoices();
+
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -60,16 +64,10 @@ export default function Home() {
             {/* Filter and Create Button */}
             <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
               <FilterBar activeFilter={filter} onFilterChange={setFilter} />
-              <Link
-                href="/invoices/new"
-                className="btn-primary flex items-center justify-center gap-2 whitespace-nowrap rounded-[24px] p-1.5 pr-3.5 w-fit"
-              >
-                <div className="bg-white size-8 grid place-items-center rounded-full">
-                  <Plus size={10} className="size-5 text-primary" />
-                </div>
-                <span className="hidden sm:inline">New Invoice</span>
-                <span className="sm:hidden">New</span>
-              </Link>
+
+              <NewInvoiceButton onClick={() => setOpen(true)} />
+
+              <CreateNewInvoiceDialog open={open} onOpenChange={setOpen} />
             </div>
           </div>
         </div>

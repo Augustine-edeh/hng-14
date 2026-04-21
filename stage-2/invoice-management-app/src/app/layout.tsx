@@ -41,14 +41,13 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn("font-sans", geist.variable)}
     >
-      <ThemeProvider>
-        <body className="font-spartan antialiased flex flex-col md:flex-row min-h-screen bg-invoice-bg-light dark:bg-invoice-bg-dark">
-          <Sidebar className="" />
+      <body className="font-spartan antialiased flex flex-col md:flex-row min-h-screen bg-invoice-bg-light dark:bg-invoice-bg-dark">
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <Sidebar />
 
           <main className="flex-1 flex">{children}</main>
-          {/* {process.env.NODE_ENV === "production" && <Analytics />} */}
-        </body>
-      </ThemeProvider>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
