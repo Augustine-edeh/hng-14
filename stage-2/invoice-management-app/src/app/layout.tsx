@@ -42,7 +42,7 @@ export default function RootLayout({
       className={cn("font-sans", geist.variable)}
     >
       <ThemeProvider>
-        <body className="font-spartan antialiased flex flex-col lg:flex-row min-h-screen bg-invoice-bg-light dark:bg-invoice-bg-dark">
+        <body className="font-spartan antialiased flex flex-col md:flex-row min-h-screen bg-invoice-bg-light dark:bg-invoice-bg-dark">
           <Sidebar className="" />
 
           <main className="flex-1 flex">{children}</main>
