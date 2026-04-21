@@ -7,28 +7,38 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { clsx } from "clsx";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function Sidebar({ className }: { className?: string }) {
   return (
     <div
       className={clsx(
-        "hidden lg:flex justify-between fixedleft-0top-0h-screen bg-invoice-card-dark dark:bg-invoice-card-dark border-r border-gray-700 flex-col rounded-r-[20px] pb-5",
+        "w-full md:w-24 flex md:flex-col justify-between md:rounded-r-[20px] bg-invoice-sidebar-light dark:bg-invoice-sidebar-dark",
         className,
       )}
     >
       <Link
         href="/"
-        className="flex items-center gap-3 text-white hover:text-invoice-primary transition-colors size-24 relative"
+        className="flex items-center justify-center size-10 sm:size-20 md:size-24 relative"
       >
         <Image src="/images/logo.png" alt="Logo" fill className="" />
       </Link>
 
-      <div className="flex flex-col items-center gap-4 px-4">
+      <div className="flex md:flex-col items-center gap-4 pr-5 md:pr-0 md:pb-5">
         <ThemeToggle />
-        <Separator />
-        <div className="size-10 rounded-full bg-invoice-primary flex items-center justify-center text-white font-bold">
-          UN
-        </div>
+
+        <Separator
+          orientation="vertical"
+          className="md:hidden bg-invoice-separator-bg"
+        />
+        <Separator
+          orientation="horizontal"
+          className="hidden md:flex bg-invoice-separator-bg"
+        />
+        <Avatar>
+          <AvatarImage src="/images/user.png" alt="user-avatar" />
+          <AvatarFallback>AG</AvatarFallback>
+        </Avatar>
       </div>
     </div>
   );

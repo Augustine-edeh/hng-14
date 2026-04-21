@@ -43,9 +43,9 @@ export default function RootLayout({
     >
       <ThemeProvider>
         <body className="font-spartan antialiased flex flex-col lg:flex-row min-h-screen bg-invoice-bg-light dark:bg-invoice-bg-dark">
-          <Sidebar className="w-24" />
+          <Sidebar className="" />
 
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 flex">{children}</main>
           {/* {process.env.NODE_ENV === "production" && <Analytics />} */}
         </body>
       </ThemeProvider>

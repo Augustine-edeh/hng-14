@@ -35,14 +35,14 @@ export default function Home() {
   const displayInvoices = filter === "all" ? invoices : filteredInvoices;
 
   return (
-    <div className="flex-1flex flex-col bg-red-300">
+    <div className="flex-1 flex flex-col">
       {/* Mobile/Tablet Top Nav */}
-      <div className="lg:hidden">
+      {/* <div className="lg:hidden">
         <TopNav />
-      </div>
+      </div> */}
 
       {/* Main Content */}
-      <main className="flex-1 px-4 sm:px-6 lg:px-12 py-6 sm:py-8">
+      <div className="flex-1 px-4 sm:px-6 lg:px-12 py-6 sm:py-8">
         {/* Header Section */}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -82,7 +82,7 @@ export default function Home() {
             ))}
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }
