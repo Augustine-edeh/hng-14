@@ -17,6 +17,7 @@ export default function Home() {
   // const filter = useInvoiceStore((state) => state.filter);
 
   const filter = useInvoiceStore((state) => state.filterStatus);
+  const setFilter = useInvoiceStore((state) => state.setFilterStatus);
   const getFilteredInvoices = useInvoiceStore(
     (state) => state.getFilteredInvoices,
   );
@@ -64,7 +65,7 @@ export default function Home() {
 
               {/* Filter and Create Button */}
               <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-                <FilterBar />
+                <FilterBar activeFilter={filter} onFilterChange={setFilter} />
                 <Link
                   href="/invoices/new"
                   className="btn-primary flex items-center justify-center gap-2 whitespace-nowrap"
