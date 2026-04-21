@@ -1,22 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useInvoiceStore } from "@/store/useInvoiceStore";
-import { Sidebar } from "@/components/Sidebar";
-import { TopNav } from "@/components/TopNav";
 import { FilterBar } from "@/components/FilterBar";
 import { InvoiceCard } from "@/components/InvoiceCard";
 import { EmptyState } from "@/components/EmptyState";
-import { Plus } from "lucide-react";
 import { CreateNewInvoiceDialog } from "@/components/CreateNewInvoiceDialog";
 import NewInvoiceButton from "@/components/NewInvoiceButton";
 
 export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
   const invoices = useInvoiceStore((state) => state.invoices);
-  // const filteredInvoices = useInvoiceStore((state) => state.filteredInvoices);
-  // const filter = useInvoiceStore((state) => state.filter);
 
   const filter = useInvoiceStore((state) => state.filterStatus);
   const setFilter = useInvoiceStore((state) => state.setFilterStatus);
