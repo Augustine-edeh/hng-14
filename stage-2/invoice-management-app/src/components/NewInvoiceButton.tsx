@@ -9,7 +9,7 @@ const NewInvoiceButton = ({ onClick }: { onClick: () => void }) => {
       onClick={onClick}
     >
       <div className="bg-white size-8 grid place-items-center rounded-full">
-        <Plus size={10} className="size-5 text-primary" />
+        <Plus size={10} className="size-5 text-invoice-primary" />
       </div>
       <span className="hidden sm:inline">New Invoice</span>
       <span className="sm:hidden">New</span>

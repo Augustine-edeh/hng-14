@@ -44,7 +44,7 @@ export default function Home() {
       <div className="flex-1 px-4 sm:px-6 lg:px-12 py-6 sm:py-8 w-full max-w-3xl mx-auto">
         {/* Header Section */}
         <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex flex-wrap items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-invoice-text-primary dark:text-invoice-text-light">
                 Invoices
@@ -58,9 +58,10 @@ export default function Home() {
 
             {/* Filter and Create Button */}
             <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-              <FilterBar activeFilter={filter} onFilterChange={setFilter} />
-
-              <NewInvoiceButton onClick={() => setOpen(true)} />
+              <div className="flex items-center gap-4">
+                <FilterBar activeFilter={filter} onFilterChange={setFilter} />
+                <NewInvoiceButton onClick={() => setOpen(true)} />
+              </div>
 
               <CreateNewInvoiceDialog open={open} onOpenChange={setOpen} />
             </div>

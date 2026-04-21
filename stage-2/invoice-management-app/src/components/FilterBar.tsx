@@ -1,36 +1,51 @@
 "use client";
 
-import { InvoiceStatus } from "@/types/invoice";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ChevronDown } from "lucide-react";
 
-interface FilterBarProps {
-  activeFilter: InvoiceStatus | "all";
-  onFilterChange: (status: InvoiceStatus | "all") => void;
+interface Props {
+  activeFilter: string;
+  onFilterChange: (filter: string) => void;
 }
 
-export function FilterBar({ activeFilter, onFilterChange }: FilterBarProps) {
-  const filters: { label: string; value: InvoiceStatus | "all" }[] = [
-    { label: "All", value: "all" },
-    { label: "Draft", value: "draft" },
-    { label: "Pending", value: "pending" },
-    { label: "Paid", value: "paid" },
-  ];
+export function FilterBar({ activeFilter, onFilterChange }: Props) {
+  const filters = ["draft", "pending", "paid"];
 
   return (
-    <div className="flex gap-2 flex-wrap">
-      {filters.map((filter) => (
-        <button
-          key={filter.value}
-          onClick={() => onFilterChange(filter.value)}
-          className={`px-4 py-2 rounded-lg font-medium transition-all ${
-            activeFilter === filter.value
-              ? "bg-invoice-primary text-white"
-              : "bg-gray-100 dark:bg-invoice-card-dark text-invoice-text-secondary dark:text-invoice-text-light hover:bg-gray-200 dark:hover:bg-gray-700"
-          }`}
-          aria-pressed={activeFilter === filter.value}
-        >
-          {filter.label}
+    <Popover>
+      <PopoverTrigger asChild>
+        <button className="flex items-center gap-2 text-sm font-medium text-invoice-text-primary dark:text-invoice-text-light">
+          <span className="hidden sm:inline">Filter by status</span>
+          <span className="sm:hidden">Filter</span>
+          <ChevronDown size={16} className="text-invoice-primary" />
         </button>
-      ))}
-    </div>
+      </PopoverTrigger>
+
+      <PopoverContent
+        align="end"
+        className="w-48 p-4 rounded-xl shadow-lg bg-white dark:bg-[#1E2139]"
+      >
+        <div className="flex flex-col gap-3">
+          {filters.map((filter) => (
+            <label
+              key={filter}
+              className="flex items-center gap-3 cursor-pointer"
+            >
+              <Checkbox
+                checked={activeFilter === filter}
+                onCheckedChange={() => onFilterChange(filter)}
+              />
+
+              <span className="capitalize text-sm font-medium">{filter}</span>
+            </label>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
