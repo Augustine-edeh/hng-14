@@ -40,11 +40,6 @@ export default function Home() {
 
   return (
     <div className="flex-1 flex flex-col">
-      {/* Mobile/Tablet Top Nav */}
-      {/* <div className="lg:hidden">
-        <TopNav />
-      </div> */}
-
       {/* Main Content */}
       <div className="flex-1 px-4 sm:px-6 lg:px-12 py-6 sm:py-8 w-full max-w-3xl mx-auto">
         {/* Header Section */}
