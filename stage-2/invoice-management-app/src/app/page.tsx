@@ -1,65 +1,94 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useInvoiceStore } from "@/store/useInvoiceStore";
+import { Sidebar } from "@/components/Sidebar";
+import { TopNav } from "@/components/TopNav";
+import { FilterBar } from "@/components/FilterBar";
+import { InvoiceCard } from "@/components/InvoiceCard";
+import { EmptyState } from "@/components/EmptyState";
+import { Plus } from "lucide-react";
 
 export default function Home() {
+  const [isMounted, setIsMounted] = useState(false);
+  const invoices = useInvoiceStore((state) => state.invoices);
+  // const filteredInvoices = useInvoiceStore((state) => state.filteredInvoices);
+  // const filter = useInvoiceStore((state) => state.filter);
+
+  const filter = useInvoiceStore((state) => state.filterStatus);
+  const getFilteredInvoices = useInvoiceStore(
+    (state) => state.getFilteredInvoices,
+  );
+
+  const filteredInvoices = getFilteredInvoices();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
+
+  const displayInvoices = filter === "all" ? invoices : filteredInvoices;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex min-h-screen bg-invoice-bg-light dark:bg-invoice-bg-dark">
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:flex w-24 flex-shrink-0">
+        <Sidebar />
+      </div>
+
+      <div className="flex-1 flex flex-col">
+        {/* Mobile/Tablet Top Nav */}
+        <div className="lg:hidden">
+          <TopNav />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+
+        {/* Main Content */}
+        <main className="flex-1 px-4 sm:px-6 lg:px-12 py-6 sm:py-8">
+          {/* Header Section */}
+          <div className="mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h1 className="text-3xl font-bold text-invoice-text-primary dark:text-invoice-text-light">
+                  Invoices
+                </h1>
+                <p className="text-sm text-invoice-text-secondary dark:text-gray-400 mt-1">
+                  {filter === "all"
+                    ? `${invoices.length} invoices`
+                    : `${displayInvoices.length} ${filter} invoices`}
+                </p>
+              </div>
+
+              {/* Filter and Create Button */}
+              <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
+                <FilterBar />
+                <Link
+                  href="/invoices/new"
+                  className="btn-primary flex items-center justify-center gap-2 whitespace-nowrap"
+                >
+                  <Plus size={20} />
+                  <span className="hidden sm:inline">New Invoice</span>
+                  <span className="sm:hidden">New</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Invoice List */}
+          {displayInvoices.length === 0 ? (
+            <EmptyState filter={filter} />
+          ) : (
+            <div className="grid gap-4 md:gap-6">
+              {displayInvoices.map((invoice) => (
+                <InvoiceCard key={invoice.id} invoice={invoice} />
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
