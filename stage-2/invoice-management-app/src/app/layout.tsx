@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/next";
+// import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { Sidebar } from "@/components/Sidebar";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -40,10 +41,14 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn("font-sans", geist.variable)}
     >
-      <body className="font-spartan antialiased">
-        <ThemeProvider>{children}</ThemeProvider>
-        {process.env.NODE_ENV === "production" && <Analytics />}
-      </body>
+      <ThemeProvider>
+        <body className="font-spartan antialiased flex flex-col lg:flex-row min-h-screen bg-invoice-bg-light dark:bg-invoice-bg-dark">
+          <Sidebar className="w-24" />
+
+          <main className="flex-1">{children}</main>
+          {/* {process.env.NODE_ENV === "production" && <Analytics />} */}
+        </body>
+      </ThemeProvider>
     </html>
   );
 }

@@ -35,61 +35,54 @@ export default function Home() {
   const displayInvoices = filter === "all" ? invoices : filteredInvoices;
 
   return (
-    <div className="flex min-h-screen bg-invoice-bg-light dark:bg-invoice-bg-dark">
-      {/* Desktop Sidebar */}
-      <div className="hidden lg:flex w-24 flex-shrink-0">
-        <Sidebar />
+    <div className="flex-1flex flex-col bg-red-300">
+      {/* Mobile/Tablet Top Nav */}
+      <div className="lg:hidden">
+        <TopNav />
       </div>
 
-      <div className="flex-1 flex flex-col">
-        {/* Mobile/Tablet Top Nav */}
-        <div className="lg:hidden">
-          <TopNav />
-        </div>
+      {/* Main Content */}
+      <main className="flex-1 px-4 sm:px-6 lg:px-12 py-6 sm:py-8">
+        {/* Header Section */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-invoice-text-primary dark:text-invoice-text-light">
+                Invoices
+              </h1>
+              <p className="text-sm text-invoice-text-secondary dark:text-gray-400 mt-1">
+                {filter === "all"
+                  ? `${invoices.length} invoices`
+                  : `${displayInvoices.length} ${filter} invoices`}
+              </p>
+            </div>
 
-        {/* Main Content */}
-        <main className="flex-1 px-4 sm:px-6 lg:px-12 py-6 sm:py-8">
-          {/* Header Section */}
-          <div className="mb-8">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <h1 className="text-3xl font-bold text-invoice-text-primary dark:text-invoice-text-light">
-                  Invoices
-                </h1>
-                <p className="text-sm text-invoice-text-secondary dark:text-gray-400 mt-1">
-                  {filter === "all"
-                    ? `${invoices.length} invoices`
-                    : `${displayInvoices.length} ${filter} invoices`}
-                </p>
-              </div>
-
-              {/* Filter and Create Button */}
-              <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-                <FilterBar activeFilter={filter} onFilterChange={setFilter} />
-                <Link
-                  href="/invoices/new"
-                  className="btn-primary flex items-center justify-center gap-2 whitespace-nowrap"
-                >
-                  <Plus size={20} />
-                  <span className="hidden sm:inline">New Invoice</span>
-                  <span className="sm:hidden">New</span>
-                </Link>
-              </div>
+            {/* Filter and Create Button */}
+            <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
+              <FilterBar activeFilter={filter} onFilterChange={setFilter} />
+              <Link
+                href="/invoices/new"
+                className="btn-primary flex items-center justify-center gap-2 whitespace-nowrap"
+              >
+                <Plus size={20} />
+                <span className="hidden sm:inline">New Invoice</span>
+                <span className="sm:hidden">New</span>
+              </Link>
             </div>
           </div>
+        </div>
 
-          {/* Invoice List */}
-          {displayInvoices.length === 0 ? (
-            <EmptyState filter={filter} />
-          ) : (
-            <div className="grid gap-4 md:gap-6">
-              {displayInvoices.map((invoice) => (
-                <InvoiceCard key={invoice.id} invoice={invoice} />
-              ))}
-            </div>
-          )}
-        </main>
-      </div>
+        {/* Invoice List */}
+        {displayInvoices.length === 0 ? (
+          <EmptyState filter={filter} />
+        ) : (
+          <div className="grid gap-4 md:gap-6">
+            {displayInvoices.map((invoice) => (
+              <InvoiceCard key={invoice.id} invoice={invoice} />
+            ))}
+          </div>
+        )}
+      </main>
     </div>
   );
 }
