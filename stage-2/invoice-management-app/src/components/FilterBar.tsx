@@ -14,6 +14,8 @@ interface Props {
   onFilterChange: (filter: string) => void;
 }
 
+const filters = ["draft", "pending", "paid"];
+
 export function FilterBar({ activeFilter, onFilterChange }: Props) {
   const filters = ["draft", "pending", "paid"];
 

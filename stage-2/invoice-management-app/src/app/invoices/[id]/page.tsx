@@ -8,7 +8,8 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { DeleteModal } from "@/components/DeleteModal";
 import { Sidebar } from "@/components/Sidebar";
 import { TopNav } from "@/components/TopNav";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function InvoiceDetail() {
   const router = useRouter();
@@ -33,13 +34,13 @@ export default function InvoiceDetail() {
   if (!invoice) {
     return (
       <div className="flex min-h-screen bg-invoice-bg-light dark:bg-invoice-bg-dark">
-        <div className="hidden lg:flex w-24 flex-shrink-0">
+        {/* <div className="hidden lg:flex w-24 flex-shrink-0">
           <Sidebar />
-        </div>
+        </div> */}
         <div className="flex-1 flex flex-col">
-          <div className="lg:hidden">
+          {/* <div className="lg:hidden">
             <TopNav />
-          </div>
+          </div> */}
           <main className="flex-1 flex items-center justify-center px-4">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-invoice-text-primary dark:text-invoice-text-light mb-2">
@@ -67,37 +68,60 @@ export default function InvoiceDetail() {
 
   return (
     <div className="flex min-h-screen bg-invoice-bg-light dark:bg-invoice-bg-dark">
-      <div className="hidden lg:flex w-24 flex-shrink-0">
-        <Sidebar />
-      </div>
-
       <div className="flex-1 flex flex-col">
-        <div className="lg:hidden">
-          <TopNav />
-        </div>
-
-        <main className="flex-1 px-4 sm:px-6 lg:px-12 py-6 sm:py-8">
+        <main className="flex-1 px-4 sm:px-6 lg:px-12 py-6 sm:py-8 pb-0">
           {/* Back Button */}
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-invoice-text-secondary hover:text-invoice-text-primary dark:hover:text-invoice-text-light mb-6 font-medium transition-colors"
+            className="flex items-center justify-start gap-2 text-invoice-text-secondary hover:text-invoice-text-primary dark:hover:text-invoice-text-light mb-6 font-medium transition-colors"
           >
-            <ArrowLeft size={20} />
-            Go back
+            <ChevronLeft className="size-5" />
+            <span>Go back</span>
           </Link>
 
           {/* Header with Status */}
           <div className="invoice-card p-6 sm:p-8 mb-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <p className="text-invoice-text-secondary dark:text-gray-400 text-sm mb-2">
-                  Invoice ID
-                </p>
-                <h1 className="text-3xl font-bold text-invoice-text-primary dark:text-invoice-text-light">
-                  #{invoice.id.toUpperCase().slice(0, 6)}
-                </h1>
+            <div className="flex items-center justify-between md:gap-20">
+              <div className="flex items-center justify-between flex-1">
+                <p>Status</p>
+                <StatusBadge status={invoice.status} />
               </div>
-              <StatusBadge status={invoice.status} />
+
+              {/* <div className="hidden md:flex gap-2">
+                <button className="rounded-full bg-invoice-action-button-edit-light dark:bg-invoice-action-button-edit-dark text-invoice-action-button-edit-text-light dark:text-white px-5 py-2 dark:hover:bg-white dark:hover:text-[#7E88C3]">
+                  Edit
+                </button>
+                <button className="rounded-full bg-invoice-action-button-delete-light dark:bg-invoice-action-button-delete-dark text-white px-5 py-2 hover:opacity-90">
+                  Delete
+                </button>
+                <button className="rounded-full bg-invoice-action-button-mark-as-paid-light dark:bg-invoice-action-button-mark-as-paid-dark hover:opacity-90 text-white px-5 py-2">
+                  Mark as Paid
+                </button>
+              </div> */}
+
+              {/* Desktop Action Buttons */}
+              <div className="hidden md:flex gap-3">
+                <Button
+                  asChild
+                  className="rounded-full bg-invoice-action-button-edit-light dark:bg-invoice-action-button-edit-dark text-invoice-action-button-edit-text-light dark:text-white px-5 py-2 dark:hover:bg-white dark:hover:text-[#7E88C3]"
+                >
+                  <Link href={`/invoices/${id}/edit`} className="">
+                    Edit
+                  </Link>
+                </Button>
+                <Button
+                  onClick={() => setDeleteModalOpen(true)}
+                  className="rounded-full bg-invoice-action-button-delete-light dark:bg-invoice-action-button-delete-dark text-white px-5 py-2 hover:opacity-90"
+                >
+                  Delete
+                </Button>
+                <Button
+                  onClick={() => markAsPaid(id)}
+                  className="rounded-full bg-invoice-action-button-mark-as-paid-light dark:bg-invoice-action-button-mark-as-paid-dark hover:opacity-90 text-white px-5 py-2"
+                >
+                  Mark as Paid
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -141,54 +165,54 @@ export default function InvoiceDetail() {
               </div>
             </div>
 
-            {/* Items Table */}
-            <div className="mb-8">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-200 dark:border-gray-700">
-                      <th className="text-left py-4 px-0 text-invoice-text-secondary dark:text-gray-400 font-medium">
-                        Item Name
-                      </th>
-                      <th className="text-right py-4 px-2 text-invoice-text-secondary dark:text-gray-400 font-medium">
-                        QTY
-                      </th>
-                      <th className="text-right py-4 px-2 text-invoice-text-secondary dark:text-gray-400 font-medium">
-                        Price
-                      </th>
-                      <th className="text-right py-4 px-0 text-invoice-text-secondary dark:text-gray-400 font-medium">
-                        Total
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {invoice.items.map((item, idx) => (
-                      <tr
-                        key={idx}
-                        className="border-b border-gray-100 dark:border-gray-700 last:border-b-0"
-                      >
-                        <td className="py-4 px-0 text-invoice-text-primary dark:text-invoice-text-light font-medium">
-                          {item.name}
-                        </td>
-                        <td className="text-right py-4 px-2 text-invoice-text-secondary dark:text-gray-400">
-                          {item.qty}
-                        </td>
-                        <td className="text-right py-4 px-2 text-invoice-text-secondary dark:text-gray-400">
-                          £{item.price.toFixed(2)}
-                        </td>
-                        <td className="text-right py-4 px-0 text-invoice-text-primary dark:text-invoice-text-light font-semibold">
-                          £{(item.qty * item.price).toFixed(2)}
-                        </td>
+            <div className="flex flex-col">
+              {/* Items Table */}
+              <div className="bg-[#F9FAFE] dark:bg-[#252945] rounded-t-[8px] p-8">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-200 dark:border-gray-700">
+                        <th className="text-left py-4 px-0 text-invoice-text-secondary dark:text-gray-400 font-medium">
+                          Item Name
+                        </th>
+                        <th className="text-right py-4 px-2 text-invoice-text-secondary dark:text-gray-400 font-medium">
+                          QTY
+                        </th>
+                        <th className="text-right py-4 px-2 text-invoice-text-secondary dark:text-gray-400 font-medium">
+                          Price
+                        </th>
+                        <th className="text-right py-4 px-0 text-invoice-text-secondary dark:text-gray-400 font-medium">
+                          Total
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {invoice.items.map((item, idx) => (
+                        <tr
+                          key={idx}
+                          className="border-b border-gray-100 dark:border-gray-700 last:border-b-0"
+                        >
+                          <td className="py-4 px-0 text-invoice-text-primary dark:text-invoice-text-light font-medium">
+                            {item.name}
+                          </td>
+                          <td className="text-right py-4 px-2 text-invoice-text-secondary dark:text-gray-400">
+                            {item.qty}
+                          </td>
+                          <td className="text-right py-4 px-2 text-invoice-text-secondary dark:text-gray-400">
+                            £{item.price.toFixed(2)}
+                          </td>
+                          <td className="text-right py-4 px-0 text-invoice-text-primary dark:text-invoice-text-light font-semibold">
+                            £{(item.qty * item.price).toFixed(2)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
 
-            {/* Total */}
-            <div className="flex justify-end">
-              <div className="w-full md:w-64 bg-invoice-text-primary dark:bg-gray-900 rounded-b-lg p-6 text-white">
+              {/* Total */}
+              <div className="w-full bg-[#373B53] dark:bg-[#0C0E16] rounded-b-[8px] p-6 text-white">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Amount Due</span>
                   <span className="text-3xl font-bold">
@@ -199,29 +223,28 @@ export default function InvoiceDetail() {
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
-            {canEdit && (
-              <Link
-                href={`/invoices/${id}/edit`}
-                className="btn-secondary text-center"
-              >
+          {/* Mobile Action Buttons */}
+          <div className="flex md:hidden gap-3 justify-center bg-invoice-card-light dark:bg-invoice-card-dark p-4 rounded-lg mb-6">
+            <Button
+              asChild
+              className="rounded-full bg-invoice-action-button-edit-light dark:bg-invoice-action-button-edit-dark text-invoice-action-button-edit-text-light dark:text-white px-5 py-2 dark:hover:bg-white dark:hover:text-[#7E88C3]"
+            >
+              <Link href={`/invoices/${id}/edit`} className="">
                 Edit
               </Link>
-            )}
-
-            {canMarkAsPaid && (
-              <button onClick={() => markAsPaid(id)} className="btn-primary">
-                Mark as Paid
-              </button>
-            )}
-
-            <button
+            </Button>
+            <Button
               onClick={() => setDeleteModalOpen(true)}
-              className="px-6 py-3 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium transition-colors"
+              className="rounded-full bg-invoice-action-button-delete-light dark:bg-invoice-action-button-delete-dark text-white px-5 py-2 hover:opacity-90"
             >
               Delete
-            </button>
+            </Button>
+            <Button
+              onClick={() => markAsPaid(id)}
+              className="rounded-full bg-invoice-action-button-mark-as-paid-light dark:bg-invoice-action-button-mark-as-paid-dark hover:opacity-90 text-white px-5 py-2"
+            >
+              Mark as Paid
+            </Button>
           </div>
 
           <DeleteModal
