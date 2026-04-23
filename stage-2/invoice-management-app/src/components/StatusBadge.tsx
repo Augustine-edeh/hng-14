@@ -26,7 +26,7 @@ export function StatusBadge({ status }: StatusBadgeProps) {
 
   return (
     <span className={`invoice-badge ${getStatusStyles(safeStatus)}`}>
-      <span className="w-2 h-2 rounded-full bg-current" />
+      <span className="size-2 rounded-full bg-current" />
       {getStatusLabel(safeStatus)}
     </span>
   );
