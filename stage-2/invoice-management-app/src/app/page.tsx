@@ -34,7 +34,6 @@ export default function Home() {
 
   return (
     <div className="flex-1 flex items-center justify-center">
-      {/* Invoice List */}
       {invoices.length === 0 ? (
         <EmptyState />
       ) : (
