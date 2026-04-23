@@ -6,7 +6,7 @@ interface EmptyStateProps {
   description?: string;
 }
 
-export function EmptyState({
+export default function EmptyState({
   title = "No invoices found",
   description = "Create your first invoice to get started.",
 }: EmptyStateProps) {
