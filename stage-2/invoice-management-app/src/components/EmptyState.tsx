@@ -1,15 +1,6 @@
-import { FileText } from "lucide-react";
 import Image from "next/image";
 
-interface EmptyStateProps {
-  title?: string;
-  description?: string;
-}
-
-export default function EmptyState({
-  title = "No invoices found",
-  description = "Create your first invoice to get started.",
-}: EmptyStateProps) {
+export default function EmptyState() {
   return (
     <div className="empty-state flex flex-col items-center justify-center gap-10.5 sm:gap-16 py-12">
       <div className="w-48 h-40 relative">
