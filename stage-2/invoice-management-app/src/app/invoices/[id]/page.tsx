@@ -249,8 +249,13 @@ export default function InvoiceDetail() {
 
           <DeleteModal
             isOpen={deleteModalOpen}
-            onClose={() => setDeleteModalOpen(false)}
             invoiceId={id}
+            onClose={() => setDeleteModalOpen(false)}
+            onConfirm={() => {
+              useInvoiceStore.getState().deleteInvoice(id);
+              setDeleteModalOpen(false);
+              router.push("/");
+            }}
           />
         </main>
       </div>

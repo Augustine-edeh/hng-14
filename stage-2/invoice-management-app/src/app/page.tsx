@@ -5,7 +5,7 @@ import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { FilterBar } from "@/components/FilterBar";
 import { InvoiceCard } from "@/components/InvoiceCard";
 import EmptyState from "@/components/EmptyState";
-import { CreateNewInvoiceDialog } from "@/components/CreateNewInvoiceDialog";
+import CreateNewInvoiceDialog from "@/components/CreateNewInvoiceDialog";
 import NewInvoiceButton from "@/components/NewInvoiceButton";
 
 export default function Home() {

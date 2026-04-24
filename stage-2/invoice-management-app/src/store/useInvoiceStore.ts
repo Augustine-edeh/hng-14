@@ -27,6 +27,7 @@ interface InvoiceStore {
 
   // Status updates
   updateInvoiceStatus: (id: string, status: InvoiceStatus) => void;
+  markAsPaid: (id: string) => void; // ✅ ADD HERE
 }
 
 export const useInvoiceStore = create<InvoiceStore>()(
@@ -110,6 +111,20 @@ export const useInvoiceStore = create<InvoiceStore>()(
                 return invoice;
               }
               return { ...invoice, status };
+            }
+            return invoice;
+          }),
+        }));
+      },
+
+      markAsPaid: (id) => {
+        set((state) => ({
+          invoices: state.invoices.map((invoice) => {
+            if (invoice.id === id) {
+              // Only allow pending → paid
+              if (invoice.status !== "pending") return invoice;
+
+              return { ...invoice, status: "paid" };
             }
             return invoice;
           }),

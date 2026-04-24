@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { FilterBar } from "@/components/FilterBar";
-import { CreateNewInvoiceDialog } from "@/components/CreateNewInvoiceDialog";
+import CreateNewInvoiceDialog from "@/components/CreateNewInvoiceDialog";
 import NewInvoiceButton from "@/components/NewInvoiceButton";
+import { InvoiceStatus } from "@/types/invoice";
 
 const Header = () => {
   const [isMounted, setIsMounted] = useState(false);

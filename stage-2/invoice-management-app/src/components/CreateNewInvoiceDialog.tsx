@@ -5,30 +5,37 @@ import { useInvoiceStore } from "@/store/useInvoiceStore";
 import { InvoiceForm } from "@/components/InvoiceForm";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
+import { InvoiceStatus } from "@/types/invoice";
+import { InvoiceFormInput } from "@/lib/validation";
 
 interface CreateInvoiceDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function CreateNewInvoiceDialog({
+export default function CreateNewInvoiceDialog({
   open,
   onOpenChange,
 }: CreateInvoiceDialogProps) {
   const addInvoice = useInvoiceStore((state) => state.addInvoice);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (
+    data: InvoiceFormInput,
+    status: InvoiceStatus,
+  ) => {
     setIsSubmitting(true);
 
     try {
-      addInvoice({
-        clientName: data.clientName,
-        clientEmail: data.clientEmail,
-        status: data.status ?? "draft",
-        items: data.items,
-        paymentDue: data.paymentDue,
-      });
+      addInvoice(
+        {
+          clientName: data.clientName,
+          clientEmail: data.clientEmail,
+          items: data.items,
+          paymentDue: data.paymentDue,
+        },
+        status, // ✅ correct
+      );
 
       onOpenChange(false);
     } catch (error) {
@@ -71,8 +78,8 @@ export function CreateNewInvoiceDialog({
 
           <InvoiceForm
             onSubmit={handleSubmit}
-            isSubmitting={isSubmitting}
-            isNew={true}
+            isLoading={isSubmitting} // ✅ correct
+            // isNew={true}
           />
         </div>
       </DialogContent>

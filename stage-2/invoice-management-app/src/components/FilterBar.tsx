@@ -8,17 +8,17 @@ import {
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
+import { InvoiceStatus } from "@/types/invoice";
 
 interface Props {
-  activeFilter: string;
-  onFilterChange: (filter: string) => void;
+  activeFilter: InvoiceStatus | "";
+  onFilterChange: (filter: InvoiceStatus | "") => void;
 }
 
 const filters = ["draft", "pending", "paid"];
 
 export function FilterBar({ activeFilter, onFilterChange }: Props) {
-  const filters = ["draft", "pending", "paid"];
-
+  const filters: InvoiceStatus[] = ["draft", "pending", "paid"];
   const [open, setOpen] = useState(false);
 
   return (
@@ -53,9 +53,27 @@ export function FilterBar({ activeFilter, onFilterChange }: Props) {
             >
               <Checkbox
                 checked={activeFilter === filter}
-                onCheckedChange={() => onFilterChange(filter)}
+                // onCheckedChange={() => onFilterChange(filter)}
+                onCheckedChange={() => {
+                  if (activeFilter === filter) {
+                    onFilterChange(""); // reset to "all"
+                  } else {
+                    onFilterChange(filter);
+                  }
+                }}
                 className="data-checked:bg-invoice-primary bg-invoice-text-light focus-visible:ring-1 rounded-xs focus-visible:ring-invoice-primary focus-visible:ring-offset-1 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#1E2139] dark:bg-gray-700 dark:data-checked:bg-invoice-primary"
               />
+
+              {/* <Checkbox
+                checked={activeFilter === filter}
+                onCheckedChange={() => {
+                  if (activeFilter === filter) {
+                    onFilterChange(""); // reset to "all"
+                  } else {
+                    onFilterChange(filter);
+                  }
+                }}
+              /> */}
 
               <span className="capitalize text-sm font-bold text-black">
                 {filter}

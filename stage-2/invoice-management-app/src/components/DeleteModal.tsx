@@ -6,14 +6,20 @@ interface DeleteModalProps {
   isOpen: boolean;
   invoiceId: string;
   onConfirm: () => void;
-  onCancel: () => void;
+  onClose: () => void;
 }
+
+// interface DeleteModalProps {
+//   isOpen: boolean;
+//   onClose: () => void; // ✅ ADD THIS
+//   invoiceId: string;
+// }
 
 export function DeleteModal({
   isOpen,
   invoiceId,
   onConfirm,
-  onCancel,
+  onClose,
 }: DeleteModalProps) {
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -24,7 +30,7 @@ export function DeleteModal({
 
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === "Escape") {
-          onCancel();
+          onClose();
         }
       };
 
@@ -36,7 +42,7 @@ export function DeleteModal({
         document.body.style.overflow = "unset";
       };
     }
-  }, [isOpen, onCancel]);
+  }, [isOpen, onClose]);
 
   if (!isOpen) {
     return null;
@@ -45,7 +51,7 @@ export function DeleteModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-      onClick={onCancel}
+      onClick={onClose}
     >
       <div
         className="invoice-card w-full max-w-md p-6 mx-4"
@@ -70,7 +76,7 @@ export function DeleteModal({
         <div className="flex gap-4 justify-end">
           <button
             ref={cancelButtonRef}
-            onClick={onCancel}
+            onClick={onClose}
             className="btn-secondary"
           >
             Cancel
