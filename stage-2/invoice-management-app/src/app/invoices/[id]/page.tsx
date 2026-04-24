@@ -4,11 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { useInvoiceStore } from "@/store/useInvoiceStore";
-import { StatusBadge } from "@/components/StatusBadge";
-import { DeleteModal } from "@/components/DeleteModal";
-import { Sidebar } from "@/components/Sidebar";
-import { TopNav } from "@/components/TopNav";
-import { ArrowLeft, ChevronLeft } from "lucide-react";
+import StatusBadge from "@/components/StatusBadge";
+import DeleteModal from "@/components/DeleteModal";
+import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function InvoiceDetail() {
@@ -34,13 +32,7 @@ export default function InvoiceDetail() {
   if (!invoice) {
     return (
       <div className="flex min-h-screen bg-invoice-bg-light dark:bg-invoice-bg-dark">
-        {/* <div className="hidden lg:flex w-24 flex-shrink-0">
-          <Sidebar />
-        </div> */}
         <div className="flex-1 flex flex-col">
-          {/* <div className="lg:hidden">
-            <TopNav />
-          </div> */}
           <main className="flex-1 flex items-center justify-center px-4">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-invoice-text-primary dark:text-invoice-text-light mb-2">
@@ -86,18 +78,6 @@ export default function InvoiceDetail() {
                 <p>Status</p>
                 <StatusBadge status={invoice.status} />
               </div>
-
-              {/* <div className="hidden md:flex gap-2">
-                <button className="rounded-full bg-invoice-action-button-edit-light dark:bg-invoice-action-button-edit-dark text-invoice-action-button-edit-text-light dark:text-white px-5 py-2 dark:hover:bg-white dark:hover:text-[#7E88C3]">
-                  Edit
-                </button>
-                <button className="rounded-full bg-invoice-action-button-delete-light dark:bg-invoice-action-button-delete-dark text-white px-5 py-2 hover:opacity-90">
-                  Delete
-                </button>
-                <button className="rounded-full bg-invoice-action-button-mark-as-paid-light dark:bg-invoice-action-button-mark-as-paid-dark hover:opacity-90 text-white px-5 py-2">
-                  Mark as Paid
-                </button>
-              </div> */}
 
               {/* Desktop Action Buttons */}
               <div className="hidden md:flex gap-3">
