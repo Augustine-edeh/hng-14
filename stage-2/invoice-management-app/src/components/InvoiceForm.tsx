@@ -6,6 +6,7 @@ import { invoiceFormSchema, InvoiceFormInput } from "@/lib/validation";
 import { Invoice, InvoiceStatus } from "@/types/invoice";
 import { Trash2, Plus } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
+import { Input } from "./ui/input";
 
 interface InvoiceFormProps {
   initialData?: Invoice;
@@ -20,7 +21,7 @@ export function InvoiceForm({
   initialData,
   onSubmit,
   isLoading = false,
-  submitButtonText = "Save Invoice",
+  submitButtonText = "Save & Send",
   showDraftButton = true,
   canChangeStatus = true,
 }: InvoiceFormProps) {
@@ -61,7 +62,7 @@ export function InvoiceForm({
   };
 
   return (
-    <form className="space-y-6">
+    <form className="flex flex-col space-y-6">
       {/* Client Information */}
       <div className="space-y-4">
         <h3 className="text-invoice-primary font-bold">Bill From</h3>
@@ -69,7 +70,7 @@ export function InvoiceForm({
           <label htmlFor="clientName" className="block">
             Client Name
           </label>
-          <input
+          <Input
             id="clientName"
             type="text"
             placeholder="Enter client name"
@@ -85,7 +86,7 @@ export function InvoiceForm({
           <label htmlFor="clientEmail" className="block">
             Email
           </label>
-          <input
+          <Input
             id="clientEmail"
             type="email"
             placeholder="Enter email address"
@@ -101,7 +102,7 @@ export function InvoiceForm({
           <label htmlFor="paymentDue" className="block">
             Invoice Date
           </label>
-          <input
+          <Input
             id="paymentDue"
             type="date"
             {...register("paymentDue")}
@@ -127,7 +128,7 @@ export function InvoiceForm({
                 <label htmlFor={`items.${index}.name`} className="block">
                   Item Name
                 </label>
-                <input
+                <Input
                   id={`items.${index}.name`}
                   type="text"
                   placeholder="e.g. Design work"
@@ -141,11 +142,11 @@ export function InvoiceForm({
                 )}
               </div>
 
-              <div className="w-20">
+              <div className="w-10">
                 <label htmlFor={`items.${index}.qty`} className="block">
                   Qty
                 </label>
-                <input
+                <Input
                   id={`items.${index}.qty`}
                   type="number"
                   min="1"
@@ -163,7 +164,7 @@ export function InvoiceForm({
                 <label htmlFor={`items.${index}.price`} className="block">
                   Price
                 </label>
-                <input
+                <Input
                   id={`items.${index}.price`}
                   type="number"
                   min="0"
@@ -176,6 +177,13 @@ export function InvoiceForm({
                     {errors.items[index]?.price?.message}
                   </p>
                 )}
+              </div>
+
+              <div>
+                <label className="block">Total</label>
+                <div className="px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-invoice-text-secondary">
+                  {items[index].qty * items[index].price}
+                </div>
               </div>
 
               <button
@@ -202,25 +210,31 @@ export function InvoiceForm({
       </div>
 
       {/* Actions */}
-      <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <button
-          type="button"
-          onClick={() => handleFormSubmit(initialData?.status ?? "pending")}
-          disabled={isLoading}
-          className="flex-1 btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isLoading ? "Saving..." : submitButtonText}
+      <div className="flex items-center justify-between gap-3 sticky bottom-0 pt-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-invoice-bg-dark">
+        <button className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed rounded-full bg-invoice-action-button-edit-light text-invoice-action-button-edit-text-light">
+          Discard
         </button>
-        {showDraftButton && !initialData && (
+
+        <div className="flex gap-2">
+          {showDraftButton && !initialData && (
+            <button
+              type="button"
+              onClick={() => handleFormSubmit("draft")}
+              disabled={isLoading}
+              className="flex-1 btn-secondary disabled:opacity-50 disabled:cursor-not-allowed rounded-full bg-invoice-status-draft text-invoice-text-secondary text-nowrap"
+            >
+              Save as Draft
+            </button>
+          )}
           <button
             type="button"
-            onClick={() => handleFormSubmit("draft")}
+            onClick={() => handleFormSubmit(initialData?.status ?? "pending")}
             disabled={isLoading}
-            className="flex-1 btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 btn-primary disabled:opacity-50 disabled:cursor-not-allowed rounded-full text-nowrap"
           >
-            Save as Draft
+            {isLoading ? "Saving..." : submitButtonText}
           </button>
-        )}
+        </div>
       </div>
     </form>
   );

@@ -53,10 +53,9 @@ export function FilterBar({ activeFilter, onFilterChange }: Props) {
             >
               <Checkbox
                 checked={activeFilter === filter}
-                // onCheckedChange={() => onFilterChange(filter)}
                 onCheckedChange={() => {
                   if (activeFilter === filter) {
-                    onFilterChange(""); // reset to "all"
+                    onFilterChange("");
                   } else {
                     onFilterChange(filter);
                   }
@@ -64,18 +63,7 @@ export function FilterBar({ activeFilter, onFilterChange }: Props) {
                 className="data-checked:bg-invoice-primary bg-invoice-text-light focus-visible:ring-1 rounded-xs focus-visible:ring-invoice-primary focus-visible:ring-offset-1 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#1E2139] dark:bg-gray-700 dark:data-checked:bg-invoice-primary"
               />
 
-              {/* <Checkbox
-                checked={activeFilter === filter}
-                onCheckedChange={() => {
-                  if (activeFilter === filter) {
-                    onFilterChange(""); // reset to "all"
-                  } else {
-                    onFilterChange(filter);
-                  }
-                }}
-              /> */}
-
-              <span className="capitalize text-sm font-bold text-black">
+              <span className="capitalize text-sm font-bold text-invoice-card-dark dark:text-invoice-card-light">
                 {filter}
               </span>
             </label>
