@@ -9,16 +9,16 @@ interface InvoiceCardProps {
   invoice: Invoice;
 }
 
-export function InvoiceCard({ invoice }: InvoiceCardProps) {
+export default function InvoiceCard({ invoice }: InvoiceCardProps) {
   const dueDate = new Date(invoice.paymentDue).toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",
     year: "numeric",
   });
 
-  const formattedTotal = new Intl.NumberFormat("en-US", {
+  const formattedTotal = new Intl.NumberFormat("en-GB", {
     style: "currency",
-    currency: "USD",
+    currency: "GBP",
   }).format(invoice.total);
 
   return (
