@@ -111,7 +111,7 @@
     @apply block text-sm font-medium mb-2 text-invoice-text-secondary dark:text-invoice-text-light;
   }
 
-  input,
+  Input,
   textarea,
   select {
     @apply rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-invoice-card-dark px-4 py-2 text-invoice-text-primary dark:text-invoice-text-light placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-invoice-primary focus:border-transparent transition-all;
@@ -161,6 +161,27 @@
 
   .empty-state {
     @apply flex flex-col items-center justify-center py-16 px-4 text-center;
+  }
+
+  @layer utilities {
+    .scrollbar-hide {
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
+
+  /* Hide number input arrows (Chrome, Safari, Edge) */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Hide number input arrows (Firefox) */
+  input[type="number"] {
+    -moz-appearance: textfield;
   }
 }
 

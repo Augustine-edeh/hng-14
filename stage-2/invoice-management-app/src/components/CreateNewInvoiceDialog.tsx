@@ -50,20 +50,16 @@ export default function CreateNewInvoiceDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showCloseButton={false}
-        className="z-40 fixed top-0 left-0 md:ml-20 mt-10 sm:mt-0 h-screen w-full max-w-none sm:w-[700px] translate-x-0 translate-y-0 p-0 pl-5 rounded-none md:rounded-r-[20px] bg-white dark:bg-invoice-bg-dark overflow-y-  shadow-xl data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left"
+        className="z-40 fixed top-0 left-0 md:ml-20 mt-10 sm:mt-0 h-screen w-full max-w-none sm:w-[700px] md:max-w-5/12 translate-x-0 translate-y-0 p-0 pl-5 rounded-none sm:rounded-r-[20px] bg-white dark:bg-invoice-bg-dark overflow-hidden shadow-xl data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left"
       >
-        <div className="h-full flex flex-col p-6 md:p-10">
-          <DialogTitle className="text-2xl font-bold mb-8">
+        <div className="h-full flex flex-col p-6 pl-8 pr-0 overflow-hidden">
+          <DialogTitle className="text-2xl font-bold mb-8 shrink-0">
             New Invoice
           </DialogTitle>
 
-          <ScrollArea className="flex-1 rounded-md border bg-red-500">
-            <InvoiceForm
-              onSubmit={handleSubmit}
-              isLoading={isSubmitting} // ✅ correct
-              // isNew={true}
-            />
-          </ScrollArea>
+          <div className="flex-1 overflow-y-auto pr-2 scrollbar -hide">
+            <InvoiceForm onSubmit={handleSubmit} isLoading={isSubmitting} />
+          </div>
         </div>
       </DialogContent>
     </Dialog>

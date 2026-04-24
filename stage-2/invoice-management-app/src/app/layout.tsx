@@ -42,7 +42,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn("font-sans", geist.variable)}
     >
-      <body className="font-spartan antialiased flex flex-col md:flex-row h-screen bg-invoice-bg-light dark:bg-invoice-bg-dark">
+      <body className="font-spartan antialiased flex flex-col md:flex-row h-screen bg-invoice-bg-light dark:bg-invoice-bg-dark overflow -hidden">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <Sidebar />
 
