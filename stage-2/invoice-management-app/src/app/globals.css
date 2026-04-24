@@ -128,7 +128,7 @@
   }
 
   .invoice-badge {
-    @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold;
+    @apply inline-flex items-center gap-2 px-6 py-2 rounded-sm text-sm font-semibold;
   }
 
   .status-paid {
@@ -140,7 +140,7 @@
   }
 
   .status-draft {
-    @apply text-invoice-status-draft bg-invoice-status-draft-bg;
+    @apply text-invoice-status-draft bg-gray-300 dark:bg-invoice-text-light;
   }
 
   .btn-primary {

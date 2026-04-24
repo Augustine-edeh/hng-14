@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Sidebar } from "@/components/Sidebar";
+import Header from "@/components/Header";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -41,14 +42,17 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn("font-sans", geist.variable)}
     >
-      <ThemeProvider>
-        <body className="font-spartan antialiased flex flex-col lg:flex-row min-h-screen bg-invoice-bg-light dark:bg-invoice-bg-dark">
-          <Sidebar className="w-24" />
+      <body className="font-spartan antialiased flex flex-col md:flex-row h-screen bg-invoice-bg-light dark:bg-invoice-bg-dark">
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <Sidebar />
 
-          <main className="flex-1">{children}</main>
-          {/* {process.env.NODE_ENV === "production" && <Analytics />} */}
-        </body>
-      </ThemeProvider>
+          <main className=" flex-1 px-4 sm:px-6 lg:px-12 py-6 sm:py-8 w-full max-w-3xl mx-auto flex flex-col">
+            <Header />
+
+            <div className="flex-1 overflow-y-auto">{children}</div>
+          </main>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

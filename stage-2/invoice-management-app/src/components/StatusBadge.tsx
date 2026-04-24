@@ -1,10 +1,12 @@
 import { InvoiceStatus } from "@/types/invoice";
 
 interface StatusBadgeProps {
-  status: InvoiceStatus;
+  status?: InvoiceStatus; // make optional for safety
 }
 
 export function StatusBadge({ status }: StatusBadgeProps) {
+  const safeStatus: InvoiceStatus = status ?? "draft";
+
   const getStatusStyles = (status: InvoiceStatus) => {
     switch (status) {
       case "paid":
@@ -23,9 +25,9 @@ export function StatusBadge({ status }: StatusBadgeProps) {
   };
 
   return (
-    <span className={`invoice-badge ${getStatusStyles(status)}`}>
-      <span className="w-2 h-2 rounded-full bg-current" />
-      {getStatusLabel(status)}
+    <span className={`invoice-badge ${getStatusStyles(safeStatus)}`}>
+      <span className="size-2 rounded-full bg-current" />
+      {getStatusLabel(safeStatus)}
     </span>
   );
 }
