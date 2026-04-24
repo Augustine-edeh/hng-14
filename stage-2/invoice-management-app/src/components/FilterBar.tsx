@@ -53,10 +53,9 @@ export function FilterBar({ activeFilter, onFilterChange }: Props) {
             >
               <Checkbox
                 checked={activeFilter === filter}
-                // onCheckedChange={() => onFilterChange(filter)}
                 onCheckedChange={() => {
                   if (activeFilter === filter) {
-                    onFilterChange(""); // reset to "all"
+                    onFilterChange("");
                   } else {
                     onFilterChange(filter);
                   }
