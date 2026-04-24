@@ -4,23 +4,41 @@ import Link from "next/link";
 import { FileText } from "lucide-react";
 // import { ThemeToggle } from "./ThemeToggle";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { clsx } from "clsx";
+import Image from "next/image";
+import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export function Sidebar() {
+export function Sidebar({ className }: { className?: string }) {
   return (
-    <div className="hidden lg:flex fixed left-0 top-0 h-screen w-64 bg-invoice-card-dark dark:bg-invoice-card-dark border-r border-gray-700 flex-col justify-between p-8">
+    <div
+      className={clsx(
+        "w-full md:w-24 flex md:flex-col justify-between md:rounded-r-[20px] bg-invoice-sidebar-light dark:bg-invoice-sidebar-dark z-50",
+        className,
+      )}
+    >
       <Link
         href="/"
-        className="flex items-center gap-3 text-white hover:text-invoice-primary transition-colors"
+        className="flex items-center justify-center size-10 sm:size-20 md:size-24 relative"
       >
-        <FileText className="w-8 h-8" />
-        <span className="font-bold text-lg">Invoices</span>
+        <Image src="/images/logo.png" alt="Logo" fill className="" />
       </Link>
 
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex md:flex-col items-center gap-4 pr-5 md:pr-0 md:pb-5">
         <ThemeToggle />
-        <div className="w-12 h-12 rounded-full bg-invoice-primary flex items-center justify-center text-white font-bold">
-          UN
-        </div>
+
+        <Separator
+          orientation="vertical"
+          className="md:hidden bg-invoice-separator-bg"
+        />
+        <Separator
+          orientation="horizontal"
+          className="hidden md:flex bg-invoice-separator-bg"
+        />
+        <Avatar>
+          <AvatarImage src="/images/user.png" alt="user-avatar" />
+          <AvatarFallback>AG</AvatarFallback>
+        </Avatar>
       </div>
     </div>
   );

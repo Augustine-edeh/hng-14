@@ -8,6 +8,7 @@ import { InvoiceForm } from "@/components/InvoiceForm";
 import { Sidebar } from "@/components/Sidebar";
 import { TopNav } from "@/components/TopNav";
 import { ArrowLeft } from "lucide-react";
+import { InvoiceStatus } from "@/types/invoice";
 
 export default function EditInvoice() {
   const router = useRouter();
@@ -89,16 +90,20 @@ export default function EditInvoice() {
     );
   }
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: any, status: InvoiceStatus) => {
     setIsSubmitting(true);
     try {
-      updateInvoice(id, {
-        clientName: data.clientName,
-        clientEmail: data.clientEmail,
-        status: data.status || "draft",
-        items: data.items,
-        paymentDue: data.paymentDue,
-      });
+      updateInvoice(
+        id,
+        {
+          clientName: data.clientName,
+          clientEmail: data.clientEmail,
+          items: data.items,
+          paymentDue: data.paymentDue,
+        },
+        status, // ✅ correct
+      );
+
       router.push(`/invoices/${id}`);
     } catch (error) {
       console.error("Failed to update invoice:", error);
@@ -135,9 +140,8 @@ export default function EditInvoice() {
 
             <InvoiceForm
               onSubmit={handleSubmit}
-              isSubmitting={isSubmitting}
               initialData={invoice}
-              isNew={false}
+              isLoading={isSubmitting} // ✅ correct prop
             />
           </div>
         </main>

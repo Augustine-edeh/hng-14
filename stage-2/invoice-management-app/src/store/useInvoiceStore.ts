@@ -9,7 +9,7 @@ import {
 
 interface InvoiceStore {
   invoices: Invoice[];
-  filterStatus: InvoiceStatus | "all";
+  filterStatus: InvoiceStatus | "";
 
   // CRUD operations
   addInvoice: (input: CreateInvoiceInput, status: InvoiceStatus) => void;
@@ -22,18 +22,19 @@ interface InvoiceStore {
   getInvoiceById: (id: string) => Invoice | undefined;
 
   // Filtering
-  setFilterStatus: (status: InvoiceStatus | "all") => void;
+  setFilterStatus: (status: InvoiceStatus | "") => void;
   getFilteredInvoices: () => Invoice[];
 
   // Status updates
   updateInvoiceStatus: (id: string, status: InvoiceStatus) => void;
+  markAsPaid: (id: string) => void; // ✅ ADD HERE
 }
 
 export const useInvoiceStore = create<InvoiceStore>()(
   persist(
     (set, get) => ({
       invoices: [],
-      filterStatus: "all",
+      filterStatus: "",
 
       addInvoice: (input, status) => {
         const newInvoice: Invoice = {
@@ -90,7 +91,8 @@ export const useInvoiceStore = create<InvoiceStore>()(
 
       getFilteredInvoices: () => {
         const { invoices, filterStatus } = get();
-        if (filterStatus === "all") {
+        if (filterStatus === "") {
+          //NOTE: This is a special case to return all invoices when the filter is set to "all". Otherwise, it will filter based on the selected status.
           return invoices;
         }
         return invoices.filter((invoice) => invoice.status === filterStatus);
@@ -109,6 +111,20 @@ export const useInvoiceStore = create<InvoiceStore>()(
                 return invoice;
               }
               return { ...invoice, status };
+            }
+            return invoice;
+          }),
+        }));
+      },
+
+      markAsPaid: (id) => {
+        set((state) => ({
+          invoices: state.invoices.map((invoice) => {
+            if (invoice.id === id) {
+              // Only allow pending → paid
+              if (invoice.status !== "pending") return invoice;
+
+              return { ...invoice, status: "paid" };
             }
             return invoice;
           }),

@@ -64,7 +64,7 @@ export function InvoiceForm({
     <form className="space-y-6">
       {/* Client Information */}
       <div className="space-y-4">
-        <h3 className="text-invoice-primary font-bold">Bill To</h3>
+        <h3 className="text-invoice-primary font-bold">Bill From</h3>
         <div>
           <label htmlFor="clientName" className="block">
             Client Name
@@ -194,10 +194,10 @@ export function InvoiceForm({
         <button
           type="button"
           onClick={() => append({ id: uuidv4(), name: "", qty: 1, price: 0 })}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-invoice-card-dark text-invoice-text-secondary dark:text-invoice-text-light hover:bg-gray-200 dark:hover:bg-gray-700 font-medium transition-colors"
+          className="flex items-center justify-center gap-2 px-4 py-2 rounded-[24px] bg-[#DFE3FA]/60 hover:bg-[#DFE3FA] dark:bg-invoice-card-dark text-[#7E88C3] dark:text-invoice-text-light dark:hover:bg-gray-700 font-medium transition-colors w-full"
         >
-          <Plus className="w-5 h-5" />
-          Add Item
+          <Plus className="size-5" />
+          Add New Item
         </button>
       </div>
 
@@ -205,7 +205,7 @@ export function InvoiceForm({
       <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
         <button
           type="button"
-          onClick={() => handleFormSubmit(initialData?.status || "draft")}
+          onClick={() => handleFormSubmit(initialData?.status ?? "pending")}
           disabled={isLoading}
           className="flex-1 btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
         >
