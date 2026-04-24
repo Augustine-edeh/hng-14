@@ -57,7 +57,7 @@ export default function CreateNewInvoiceDialog({
             New Invoice
           </DialogTitle>
 
-          <div className="flex-1 overflow-y-auto pr-2 scrollbar -hide">
+          <div className="flex-1 overflow-y-auto pr-2">
             <InvoiceForm onSubmit={handleSubmit} isLoading={isSubmitting} />
           </div>
         </div>

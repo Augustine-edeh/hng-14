@@ -179,9 +179,37 @@
     margin: 0;
   }
 
-  /* Hide number input arrows (Firefox) */
-  input[type="number"] {
-    -moz-appearance: textfield;
+  /* ===== Scrollbar ===== */
+
+  /* Chrome, Edge, Safari */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Light mode */
+  ::-webkit-scrollbar-thumb {
+    background-color: #dfe3fa; /* red-500 */
+    border-radius: 9999px;
+  }
+
+  /* Dark mode */
+  .dark ::-webkit-scrollbar-thumb {
+    background-color: #252945; /* red-400 (softer on dark bg) */
+  }
+
+  /* ===== Firefox ===== */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #dfe3fa transparent; /* light mode */
+  }
+
+  /* Dark mode Firefox */
+  .dark * {
+    scrollbar-color: #252945 transparent;
   }
 }
 
