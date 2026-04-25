@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Invoice } from "@/types/invoice";
-import { StatusBadge } from "@/components/StatusBadge";
+import StatusBadge from "@/components/StatusBadge";
 import { ChevronRight } from "lucide-react";
 
 interface InvoiceCardProps {
