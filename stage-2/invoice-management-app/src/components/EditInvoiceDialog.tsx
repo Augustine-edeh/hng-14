@@ -56,7 +56,8 @@ const EditInvoiceDialog = ({ open, onOpenChange, invoice }: Props) => {
           <div className="flex-1 overflow-y-auto pr-2">
             <InvoiceForm
               onSubmit={handleSubmit}
-              initialData={invoice} // 🔥 KEY DIFFERENCE
+              onCancel={() => onOpenChange(false)}
+              initialData={invoice}
               isLoading={isSubmitting}
             />
           </div>

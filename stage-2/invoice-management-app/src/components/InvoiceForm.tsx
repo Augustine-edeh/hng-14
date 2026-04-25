@@ -15,6 +15,7 @@ interface InvoiceFormProps {
   submitButtonText?: string;
   showDraftButton?: boolean;
   canChangeStatus?: boolean;
+  onCancel?: () => void; // ✅ ADD THIS
 }
 
 export function InvoiceForm({
@@ -24,6 +25,7 @@ export function InvoiceForm({
   submitButtonText = "Save & Send",
   showDraftButton = true,
   canChangeStatus = true,
+  onCancel = () => {}, // ✅ DEFAULT NO-OP
 }: InvoiceFormProps) {
   const {
     register,
@@ -211,7 +213,10 @@ export function InvoiceForm({
 
       {/* Actions */}
       <div className="flex items-center justify-end gap-3 sticky bottom-0 pt-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-invoice-bg-dark">
-        <button className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed rounded-full bg-invoice-action-button-edit-light dark:bg-invoice-action-button-edit-dark text-invoice-action-button-edit-text-light dark:text-invoice-text-light">
+        <button
+          onClick={onCancel}
+          className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed rounded-full bg-invoice-action-button-edit-light dark:bg-invoice-action-button-edit-dark text-invoice-action-button-edit-text-light dark:text-invoice-text-light"
+        >
           Cancel
         </button>
 
