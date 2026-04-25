@@ -4,7 +4,7 @@ interface StatusBadgeProps {
   status?: InvoiceStatus; // make optional for safety
 }
 
-export function StatusBadge({ status }: StatusBadgeProps) {
+export default function StatusBadge({ status }: StatusBadgeProps) {
   const safeStatus: InvoiceStatus = status ?? "draft";
 
   const getStatusStyles = (status: InvoiceStatus) => {

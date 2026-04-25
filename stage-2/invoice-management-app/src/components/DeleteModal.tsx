@@ -15,7 +15,7 @@ interface DeleteModalProps {
 //   invoiceId: string;
 // }
 
-export function DeleteModal({
+export default function DeleteModal({
   isOpen,
   invoiceId,
   onConfirm,

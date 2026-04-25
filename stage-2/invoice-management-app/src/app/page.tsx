@@ -2,11 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useInvoiceStore } from "@/store/useInvoiceStore";
-import { FilterBar } from "@/components/FilterBar";
-import { InvoiceCard } from "@/components/InvoiceCard";
+import InvoiceCard from "@/components/InvoiceCard";
 import EmptyState from "@/components/EmptyState";
-import CreateNewInvoiceDialog from "@/components/CreateNewInvoiceDialog";
-import NewInvoiceButton from "@/components/NewInvoiceButton";
 
 export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
@@ -19,8 +16,6 @@ export default function Home() {
   );
 
   const filteredInvoices = getFilteredInvoices();
-
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
