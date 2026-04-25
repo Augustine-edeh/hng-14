@@ -46,7 +46,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <Sidebar />
 
-          <main className=" flex-1 px-4 sm:px-6 lg:px-12 py-6 sm:py-8 w-full max-w-3xl mx-auto flex flex-col">
+          <main className="flex-1 px-4 sm:px-6 lg:px-12 py-6 sm:py-8 w-full max-w-3xl mx-auto flex flex-col">
             <Header />
 
             <div className="flex-1 overflow-y-auto">{children}</div>
