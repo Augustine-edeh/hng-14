@@ -9,26 +9,38 @@ import { getAuthSession, logout } from "@/lib/auth";
 import { getHabits, updateHabit } from "@/lib/storage";
 import { toggleHabitCompletion, deleteHabitWithId } from "@/lib/habits";
 import { Habit } from "@/types/habit";
+import { Session } from "@/types/auth";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [habits, setHabits] = useState<Habit[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingHabit, setEditingHabit] = useState<Habit | undefined>();
+  const [pendingDelete, setPendingDelete] = useState<Habit | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const currentSession = getAuthSession();
-    if (currentSession) {
-      setSession(currentSession);
-      setHabits(getHabits().filter((h) => h.userId === currentSession.userId));
+    const timer = window.setTimeout(() => {
+      const currentSession = getAuthSession();
+      if (currentSession) {
+        setSession(currentSession);
+        setHabits(
+          getHabits().filter((h) => h.userId === currentSession.userId),
+        );
+      }
       setIsLoading(false);
-    }
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
-  const handleFormSuccess = (habit: Habit) => {
-    setHabits(getHabits().filter((h) => h.userId === session.userId));
+  const refreshHabits = (userId: string) => {
+    setHabits(getHabits().filter((h) => h.userId === userId));
+  };
+
+  const handleFormSuccess = () => {
+    if (session) refreshHabits(session.userId);
     setShowForm(false);
     setEditingHabit(undefined);
   };
@@ -39,16 +51,21 @@ export default function DashboardPage() {
   };
 
   const handleDelete = (habitId: string) => {
-    if (confirm("Are you sure you want to delete this habit?")) {
-      deleteHabitWithId(habitId, true);
-      setHabits(getHabits().filter((h) => h.userId === session.userId));
-    }
+    const habit = habits.find((item) => item.id === habitId);
+    if (habit) setPendingDelete(habit);
+  };
+
+  const confirmDelete = () => {
+    if (!pendingDelete || !session) return;
+    deleteHabitWithId(pendingDelete.id, true);
+    refreshHabits(session.userId);
+    setPendingDelete(null);
   };
 
   const handleToggle = (habit: Habit, date: string) => {
     const updated = toggleHabitCompletion(habit, date);
     updateHabit(updated);
-    setHabits(getHabits().filter((h) => h.userId === session.userId));
+    if (session) refreshHabits(session.userId);
   };
 
   const handleLogout = () => {
@@ -77,7 +94,7 @@ export default function DashboardPage() {
               <p className="text-gray-600">{session?.email}</p>
             </div>
             <button
-              data-testid="logout-button"
+              data-testid="auth-logout-button"
               onClick={handleLogout}
               className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
             >
@@ -88,7 +105,7 @@ export default function DashboardPage() {
           {showForm ? (
             <div className="bg-white rounded-lg p-6 shadow-sm mb-8">
               <HabitForm
-                userId={session.userId}
+                userId={session?.userId || ""}
                 habit={editingHabit}
                 onSuccess={handleFormSuccess}
                 onCancel={() => {
@@ -99,7 +116,7 @@ export default function DashboardPage() {
             </div>
           ) : (
             <button
-              data-testid="new-habit-button"
+              data-testid="create-habit-button"
               onClick={() => setShowForm(true)}
               className="w-full mb-8 bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 font-medium"
             >
@@ -108,12 +125,47 @@ export default function DashboardPage() {
           )}
 
           <HabitList
-            userId={session.userId}
+            userId={session?.userId || ""}
             habits={habits}
             onEdit={handleEdit}
             onDelete={handleDelete}
             onToggle={handleToggle}
           />
+
+          {pendingDelete && (
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="delete-title"
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+            >
+              <div className="w-full max-w-sm rounded-lg bg-white p-5 shadow-lg">
+                <h2 id="delete-title" className="text-lg font-semibold">
+                  Delete habit?
+                </h2>
+                <p className="mt-2 text-sm text-gray-600">
+                  This removes {pendingDelete.name} from your habit list.
+                </p>
+                <div className="mt-5 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPendingDelete(null)}
+                    className="flex-1 rounded-md border px-4 py-2 font-medium hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    data-testid="confirm-delete-button"
+                    type="button"
+                    onClick={confirmDelete}
+                    className="flex-1 rounded-md bg-red-600 px-4 py-2 font-medium text-white hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </ProtectedRoute>
