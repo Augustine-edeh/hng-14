@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { getCachedSummary, cacheSummary } from "../storage/summaryStorage";
 
 type ExtractedContent = {
   title: string;
@@ -15,6 +16,8 @@ export default function Popup() {
   const [error, setError] = useState("");
 
   const [summary, setSummary] = useState("");
+
+  const [isCached, setIsCached] = useState(false);
 
   const handleSummarize = async () => {
     try {
@@ -40,6 +43,18 @@ export default function Popup() {
 
       setPageData(response.data);
 
+      const cachedSummary = await getCachedSummary(response.data.url);
+
+      if (cachedSummary) {
+        setIsCached(true);
+
+        setSummary(cachedSummary);
+
+        setLoading(false);
+
+        return;
+      }
+
       const summaryResponse = await chrome.runtime.sendMessage({
         type: "GENERATE_SUMMARY",
         content: response.data.content,
@@ -49,7 +64,11 @@ export default function Popup() {
         throw new Error(summaryResponse.error);
       }
 
+      setIsCached(false);
+
       setSummary(summaryResponse.summary);
+
+      await cacheSummary(response.data.url, summaryResponse.summary);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Something went wrong");
     } finally {
@@ -106,6 +125,10 @@ export default function Popup() {
               <p className="text-xs text-slate-500 mt-1 break-all">
                 {pageData.url}
               </p>
+
+              {isCached && (
+                <p className="mt-2 text-xs text-green-400">Cached summary</p>
+              )}
             </div>
 
             <div className="max-h-62.5 overflow-y-auto rounded-lg bg-slate-900 p-3">
