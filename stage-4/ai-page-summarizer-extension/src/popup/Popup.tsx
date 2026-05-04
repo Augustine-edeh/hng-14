@@ -138,7 +138,6 @@ export default function Popup() {
                   <div className="h-4 w-4/6 rounded bg-slate-700" />
                 </div>
               ) : summary ? (
-                // {summary ? (
                 <div className="prose prose-invert prose-sm max-w-none prose-headings:text-white prose-p:text-slate-300 prose-strong:text-white prose-li:text-slate-300">
                   <ReactMarkdown>{summary}</ReactMarkdown>
                 </div>
