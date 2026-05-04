@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react(), tailwindcss(), crx({ manifest })],
 
     define: {
-      __GEMINI_API_KEY__: JSON.stringify(env.VITE_GEMINI_API_KEY),
+      __OPENROUTER_API_KEY__: JSON.stringify(env.VITE_OPENROUTER_API_KEY),
     },
   };
 });

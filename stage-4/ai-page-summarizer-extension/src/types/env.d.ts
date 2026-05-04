@@ -1,1 +1,1 @@
-declare const __GEMINI_API_KEY__: string;
+declare const __OPENROUTER_API_KEY__: string;
