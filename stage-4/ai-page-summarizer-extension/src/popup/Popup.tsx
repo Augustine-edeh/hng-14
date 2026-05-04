@@ -2,6 +2,7 @@ import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { getCachedSummary, cacheSummary } from "../storage/summaryStorage";
 import { Loader2, Copy, Check } from "lucide-react";
+import { calculateReadingTime } from "../utils/readingTime";
 
 type ExtractedContent = {
   title: string;
@@ -21,6 +22,8 @@ export default function Popup() {
   const [isCached, setIsCached] = useState(false);
 
   const [copied, setCopied] = useState(false);
+
+  const readingStats = pageData ? calculateReadingTime(pageData.content) : null;
 
   const handleSummarize = async () => {
     try {
@@ -142,6 +145,16 @@ export default function Popup() {
                 <p className="text-xs text-slate-500 mt-1 break-all">
                   {pageData.url}
                 </p>
+
+                {readingStats && (
+                  <div className="mt-2 flex items-center gap-3 text-xs text-slate-400">
+                    <span>{readingStats.words.toLocaleString()} words</span>
+
+                    <span>•</span>
+
+                    <span>{readingStats.minutes} min read</span>
+                  </div>
+                )}
 
                 {isCached && (
                   <p className="mt-2 text-xs text-green-400">Cached summary</p>
