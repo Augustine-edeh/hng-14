@@ -13,6 +13,8 @@ export default function Popup() {
 
   const [error, setError] = useState("");
 
+  const [summary, setSummary] = useState("");
+
   const handleSummarize = async () => {
     try {
       setLoading(true);
@@ -36,6 +38,17 @@ export default function Popup() {
       }
 
       setPageData(response.data);
+
+      const summaryResponse = await chrome.runtime.sendMessage({
+        type: "GENERATE_SUMMARY",
+        content: response.data.content,
+      });
+
+      if (!summaryResponse.success) {
+        throw new Error(summaryResponse.error);
+      }
+
+      setSummary(summaryResponse.summary);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Something went wrong");
     } finally {
@@ -95,9 +108,15 @@ export default function Popup() {
             </div>
 
             <div className="max-h-[250px] overflow-y-auto rounded-lg bg-slate-900 p-3">
-              <p className="text-sm text-slate-300 whitespace-pre-wrap">
-                {pageData.content.slice(0, 3000)}
-              </p>
+              {summary ? (
+                <div className="whitespace-pre-wrap text-sm text-slate-300">
+                  {summary}
+                </div>
+              ) : (
+                <p className="text-sm text-slate-400 whitespace-pre-wrap">
+                  {pageData.content.slice(0, 3000)}
+                </p>
+              )}
             </div>
           </div>
         )}

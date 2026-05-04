@@ -6,8 +6,10 @@ const manifest = {
 
   permissions: ["storage", "activeTab", "scripting"],
 
-  host_permissions: ["<all_urls>"],
-
+  host_permissions: [
+    "<all_urls>",
+    "https://generativelanguage.googleapis.com/*",
+  ],
   action: {
     default_popup: "popup.html",
   },
