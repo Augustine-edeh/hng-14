@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
 
 type ExtractedContent = {
   title: string;
@@ -109,8 +110,8 @@ export default function Popup() {
 
             <div className="max-h-62.5 overflow-y-auto rounded-lg bg-slate-900 p-3">
               {summary ? (
-                <div className="whitespace-pre-wrap text-sm text-slate-300">
-                  {summary}
+                <div className="prose prose-invert prose-sm max-w-none prose-headings:text-white prose-p:text-slate-300 prose-strong:text-white prose-li:text-slate-300">
+                  <ReactMarkdown>{summary}</ReactMarkdown>
                 </div>
               ) : (
                 <p className="text-sm text-slate-400 whitespace-pre-wrap">
