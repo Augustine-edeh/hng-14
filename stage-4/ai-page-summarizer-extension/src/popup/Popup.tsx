@@ -57,7 +57,7 @@ export default function Popup() {
   };
 
   return (
-    <main className="w-[400px] min-h-[500px] bg-slate-950 text-white p-4">
+    <main className="w-100 min-h-125 bg-slate-950 text-white p-4">
       <div>
         <h1 className="text-xl font-bold">AI Page Summarizer</h1>
 
@@ -107,7 +107,7 @@ export default function Popup() {
               </p>
             </div>
 
-            <div className="max-h-[250px] overflow-y-auto rounded-lg bg-slate-900 p-3">
+            <div className="max-h-62.5 overflow-y-auto rounded-lg bg-slate-900 p-3">
               {summary ? (
                 <div className="whitespace-pre-wrap text-sm text-slate-300">
                   {summary}

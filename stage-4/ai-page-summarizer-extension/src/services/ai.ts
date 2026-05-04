@@ -1,15 +1,8 @@
-// const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
-
-// const GEMINI_API_URL =
-//   "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
-
 const GEMINI_API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
 export async function generateSummary(content: string) {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  // const apiKey = __GEMINI_API_KEY__;
-  console.log("Gemini Key:", apiKey);
 
   const trimmedContent = content.slice(0, 12000);
 
