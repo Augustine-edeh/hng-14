@@ -47,7 +47,19 @@ ${trimmedContent}
 
     console.error("Gemini API Error:", errorText);
 
-    throw new Error(`Failed to generate summary: ${response.status}`);
+    // throw new Error(`Failed to generate summary: ${response.status}`);
+
+    if (response.status === 503) {
+      throw new Error(
+        "AI service is currently busy. Please try again in a few moments.",
+      );
+    }
+
+    if (response.status === 429) {
+      throw new Error("API quota exceeded. Please try again later.");
+    }
+
+    throw new Error("Failed to generate summary.");
   }
 
   const data = await response.json();
