@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { getCachedSummary, cacheSummary } from "../storage/summaryStorage";
+import { Loader2 } from "lucide-react";
 
 type ExtractedContent = {
   title: string;
@@ -90,19 +91,16 @@ export default function Popup() {
         <button
           onClick={handleSummarize}
           disabled={loading}
-          className="
-            w-full
-            rounded-xl
-            bg-blue-600
-            hover:bg-blue-500
-            disabled:opacity-50
-            transition-colors
-            px-4
-            py-3
-            font-medium
-          "
+          className="w-full rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 px-4 py-3 font-medium shadow-lg shadow-blue-500/20"
         >
-          {loading ? "Extracting..." : "Summarize Page"}
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Summarizing...
+            </span>
+          ) : (
+            "Summarize Page"
+          )}
         </button>
       </div>
 
@@ -132,7 +130,15 @@ export default function Popup() {
             </div>
 
             <div className="max-h-62.5 overflow-y-auto rounded-lg bg-slate-900 p-3">
-              {summary ? (
+              {loading ? (
+                <div className="space-y-3 animate-pulse">
+                  <div className="h-4 rounded bg-slate-700" />
+                  <div className="h-4 rounded bg-slate-700" />
+                  <div className="h-4 w-5/6 rounded bg-slate-700" />
+                  <div className="h-4 w-4/6 rounded bg-slate-700" />
+                </div>
+              ) : summary ? (
+                // {summary ? (
                 <div className="prose prose-invert prose-sm max-w-none prose-headings:text-white prose-p:text-slate-300 prose-strong:text-white prose-li:text-slate-300">
                   <ReactMarkdown>{summary}</ReactMarkdown>
                 </div>
