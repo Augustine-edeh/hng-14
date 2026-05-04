@@ -39,9 +39,6 @@ ${trimmedContent}
     },
 
     body: JSON.stringify({
-      // model: "meta-llama/llama-3.1-8b-instruct:free",
-      // model: "google/gemma-3-27b-it:free",
-      // model: "mistralai/mistral-7b-instruct:free",
       model: "openai/gpt-oss-20b:free",
       messages: [
         {
