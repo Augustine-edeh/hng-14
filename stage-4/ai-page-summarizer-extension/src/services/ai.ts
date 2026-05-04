@@ -47,8 +47,6 @@ ${trimmedContent}
 
     console.error("Gemini API Error:", errorText);
 
-    // throw new Error(`Failed to generate summary: ${response.status}`);
-
     if (response.status === 503) {
       throw new Error(
         "AI service is currently busy. Please try again in a few moments.",
