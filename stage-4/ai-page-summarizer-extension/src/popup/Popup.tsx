@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { getCachedSummary, cacheSummary } from "../storage/summaryStorage";
-import { Loader2 } from "lucide-react";
+import { Loader2, Copy, Check } from "lucide-react";
 
 type ExtractedContent = {
   title: string;
@@ -19,6 +19,8 @@ export default function Popup() {
   const [summary, setSummary] = useState("");
 
   const [isCached, setIsCached] = useState(false);
+
+  const [copied, setCopied] = useState(false);
 
   const handleSummarize = async () => {
     try {
@@ -77,6 +79,22 @@ export default function Popup() {
     }
   };
 
+  const handleCopySummary = async () => {
+    if (!summary) return;
+
+    try {
+      await navigator.clipboard.writeText(summary);
+
+      setCopied(true);
+
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (error) {
+      console.error("Failed to copy summary", error);
+    }
+  };
+
   return (
     <main className="w-100 min-h-125 bg-slate-950 text-white p-4">
       <div>
@@ -117,15 +135,36 @@ export default function Popup() {
           </p>
         ) : (
           <div className="space-y-4">
-            <div>
-              <h2 className="font-semibold text-base">{pageData.title}</h2>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h2 className="font-semibold text-base">{pageData.title}</h2>
 
-              <p className="text-xs text-slate-500 mt-1 break-all">
-                {pageData.url}
-              </p>
+                <p className="text-xs text-slate-500 mt-1 break-all">
+                  {pageData.url}
+                </p>
 
-              {isCached && (
-                <p className="mt-2 text-xs text-green-400">Cached summary</p>
+                {isCached && (
+                  <p className="mt-2 text-xs text-green-400">Cached summary</p>
+                )}
+              </div>
+
+              {summary && (
+                <button
+                  onClick={handleCopySummary}
+                  className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs text-slate-300 hover:bg-slate-700 transition-colors"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="h-4 w-4 text-green-400" />
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-4 w-4" />
+                      Copy
+                    </>
+                  )}
+                </button>
               )}
             </div>
 
