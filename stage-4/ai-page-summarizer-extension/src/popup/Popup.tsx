@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { getCachedSummary, cacheSummary } from "../storage/summaryStorage";
-import { Loader2, Copy, Check, RotateCcw } from "lucide-react";
+import { Loader2, Copy, Check, RotateCcw, FileText } from "lucide-react";
 import { calculateReadingTime } from "../utils/readingTime";
 
 type ExtractedContent = {
@@ -111,7 +111,7 @@ export default function Popup() {
   };
 
   return (
-    <main className="w-100 min-h-125 bg-slate-950 text-white p-4">
+    <main className="w-105 min-h-150 bg-slate-950 text-white p-5">
       <div>
         <h1 className="text-xl font-bold">AI Page Summarizer</h1>
 
@@ -119,7 +119,6 @@ export default function Popup() {
           Summarize webpages instantly with AI
         </p>
       </div>
-
       <div className="mt-6 flex gap-3">
         <button
           onClick={handleSummarize}
@@ -158,18 +157,27 @@ export default function Popup() {
           </button>
         )}
       </div>
-
       {error && (
         <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-300">
           {error}
         </div>
       )}
-
       <div className="mt-6 rounded-xl border border-slate-800 p-4">
         {!pageData ? (
-          <p className="text-sm text-slate-400">
-            Your extracted page content will appear here.
-          </p>
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="rounded-2xl bg-slate-900 p-4">
+              <FileText className="h-8 w-8 text-slate-500" />
+            </div>
+
+            <h3 className="mt-4 text-sm font-medium text-white">
+              No summary yet
+            </h3>
+
+            <p className="mt-2 max-w-xs text-sm text-slate-400">
+              Open an article or blog post and click "Summarize Page" to
+              generate an AI-powered summary.
+            </p>
+          </div>
         ) : (
           <div className="space-y-4">
             <div className="flex items-start justify-between gap-3">
@@ -215,7 +223,9 @@ export default function Popup() {
               )}
             </div>
 
-            <div className="max-h-62.5 overflow-y-auto rounded-lg bg-slate-900 p-3">
+            <div className="border-t border-slate-800" />
+
+            <div className="max-h-[320px] overflow-y-auto rounded-xl border border-slate-800 bg-slate-900/60 p-4">
               {loading ? (
                 <div className="space-y-3 animate-pulse">
                   <div className="h-4 rounded bg-slate-700" />
