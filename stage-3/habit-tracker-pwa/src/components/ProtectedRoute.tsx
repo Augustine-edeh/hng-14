@@ -14,13 +14,17 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const session = getAuthSession();
-    if (!session) {
-      router.push("/login");
-    } else {
-      setIsAuth(true);
-    }
-    setIsLoading(false);
+    const timer = window.setTimeout(() => {
+      const session = getAuthSession();
+      if (!session) {
+        router.push("/login");
+      } else {
+        setIsAuth(true);
+      }
+      setIsLoading(false);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [router]);
 
   if (isLoading) {

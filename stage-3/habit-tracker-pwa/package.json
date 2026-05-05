@@ -7,10 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test:unit": "vitest run tests/unit",
+    "test:unit": "vitest run --coverage tests/unit",
     "test:integration": "vitest run tests/integration",
     "test:e2e": "playwright test",
-    "test": "vitest run"
+    "test": "npm run test:unit && npm run test:integration && npm run test:e2e"
   },
   "dependencies": {
     "next": "16.2.4",
@@ -43,6 +43,7 @@
     "eslint-config-next": "16.2.4",
     "babel-plugin-react-compiler": "1.0.0",
     "vitest": "^4.1.5",
+    "@vitest/coverage-v8": "^4.1.5",
     "@vitest/ui": "^4.1.5",
     "@testing-library/react": "^16.3.2",
     "@testing-library/jest-dom": "^6.9.1",

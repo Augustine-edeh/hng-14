@@ -1,10 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-// import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
-
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Habit Tracker",
@@ -12,8 +7,8 @@ export const metadata: Metadata = {
   generator: "v0.app",
   manifest: "/manifest.json",
   icons: {
-    icon: "/icon-192x192.png",
-    apple: "/icon-192x192.png",
+    icon: "/icons/icon-192.png",
+    apple: "/icons/icon-192.png",
   },
 };
 
@@ -38,12 +33,13 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased">
         {children}
-        {/* {process.env.NODE_ENV === "production" && <Analytics />} */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js');
+                window.addEventListener('load', function () {
+                  navigator.serviceWorker.register('/sw.js');
+                });
               }
             `,
           }}

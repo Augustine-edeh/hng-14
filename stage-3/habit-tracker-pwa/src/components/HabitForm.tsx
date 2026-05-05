@@ -20,6 +20,7 @@ export function HabitForm({
 }: HabitFormProps) {
   const [name, setName] = useState(habit?.name || "");
   const [description, setDescription] = useState(habit?.description || "");
+  const [frequency] = useState<"daily">("daily");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,8 +28,9 @@ export function HabitForm({
     e.preventDefault();
     setError("");
 
-    if (!validateHabitName(name)) {
-      setError("Habit name must be 1-100 characters");
+    const validation = validateHabitName(name);
+    if (!validation.valid) {
+      setError(validation.error || "Habit name is required");
       return;
     }
 
@@ -39,11 +41,12 @@ export function HabitForm({
 
       if (habit) {
         result = editHabit(habit.id, {
-          name: name.trim(),
+          name: validation.value,
           description: description.trim(),
+          frequency,
         });
       } else {
-        result = createHabit(userId, name.trim(), description.trim());
+        result = createHabit(userId, validation.value, description.trim());
       }
 
       if (result) {
@@ -51,7 +54,7 @@ export function HabitForm({
       } else {
         setError("Failed to save habit");
       }
-    } catch (err) {
+    } catch {
       setError("An error occurred");
     } finally {
       setIsLoading(false);
@@ -59,7 +62,11 @@ export function HabitForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
+    <form
+      data-testid="habit-form"
+      onSubmit={handleSubmit}
+      className="w-full space-y-4"
+    >
       <h2 className="text-2xl font-bold mb-6">
         {habit ? "Edit Habit" : "New Habit"}
       </h2>
@@ -67,6 +74,7 @@ export function HabitForm({
       {error && (
         <div
           data-testid="error-message"
+          role="alert"
           className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"
         >
           {error}
@@ -74,8 +82,11 @@ export function HabitForm({
       )}
 
       <div>
-        <label className="block text-sm font-medium mb-2">Habit Name</label>
+        <label htmlFor="habit-name" className="mb-2 block text-sm font-medium">
+          Habit Name
+        </label>
         <input
+          id="habit-name"
           data-testid="habit-name-input"
           type="text"
           value={name}
@@ -86,10 +97,14 @@ export function HabitForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label
+          htmlFor="habit-description"
+          className="mb-2 block text-sm font-medium"
+        >
           Description (optional)
         </label>
         <textarea
+          id="habit-description"
           data-testid="habit-description-input"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -98,9 +113,27 @@ export function HabitForm({
         />
       </div>
 
+      <div>
+        <label
+          htmlFor="habit-frequency"
+          className="mb-2 block text-sm font-medium"
+        >
+          Frequency
+        </label>
+        <select
+          id="habit-frequency"
+          data-testid="habit-frequency-select"
+          value={frequency}
+          disabled
+          className="w-full rounded-lg border px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+        >
+          <option value="daily">Daily</option>
+        </select>
+      </div>
+
       <div className="flex gap-2">
         <button
-          data-testid="habit-submit-button"
+          data-testid="habit-save-button"
           type="submit"
           disabled={isLoading}
           className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
