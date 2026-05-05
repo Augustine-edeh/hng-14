@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { getCachedSummary, cacheSummary } from "../storage/summaryStorage";
-import { Loader2, Copy, Check } from "lucide-react";
+import { Loader2, Copy, Check, RotateCcw } from "lucide-react";
 import { calculateReadingTime } from "../utils/readingTime";
 
 type ExtractedContent = {
@@ -98,6 +98,18 @@ export default function Popup() {
     }
   };
 
+  const handleReset = () => {
+    setPageData(null);
+
+    setSummary("");
+
+    setError("");
+
+    setIsCached(false);
+
+    setCopied(false);
+  };
+
   return (
     <main className="w-100 min-h-125 bg-slate-950 text-white p-4">
       <div>
@@ -108,11 +120,11 @@ export default function Popup() {
         </p>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 flex gap-3">
         <button
           onClick={handleSummarize}
           disabled={loading}
-          className="w-full rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 px-4 py-3 font-medium shadow-lg shadow-blue-500/20"
+          className="flex-1 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 px-4 py-3 font-medium shadow-lg shadow-blue-500/20"
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">
@@ -123,6 +135,28 @@ export default function Popup() {
             "Summarize Page"
           )}
         </button>
+
+        {(pageData || summary || error) && (
+          <button
+            onClick={handleReset}
+            className="
+      flex
+      items-center
+      justify-center
+      rounded-xl
+      border
+      border-slate-700
+      bg-slate-900
+      px-4
+      py-3
+      text-slate-300
+      hover:bg-slate-800
+      transition-colors
+    "
+          >
+            <RotateCcw className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       {error && (
