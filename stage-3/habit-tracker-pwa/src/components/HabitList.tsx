@@ -2,8 +2,7 @@
 
 import { Habit } from "@/types/habit";
 import { HabitCard } from "./HabitCard";
-import { getHabitsByUser } from "@/lib/habits";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 
 interface HabitListProps {
   userId: string;
@@ -26,8 +25,8 @@ export function HabitList({
   }, []);
 
   const userHabits = useMemo(() => {
-    return getHabitsByUser(userId);
-  }, [userId]);
+    return habits.filter((habit) => habit.userId === userId);
+  }, [habits, userId]);
 
   if (userHabits.length === 0) {
     return (

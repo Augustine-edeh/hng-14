@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { SplashScreen } from "@/components/SplashScreen";
+import { SplashScreen } from "@/components/shared/SplashScreen";
 import { getAuthSession } from "@/lib/auth";
 
 export default function Home() {
   const router = useRouter();
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -25,7 +25,7 @@ export default function Home() {
   return (
     <>
       {showSplash && <SplashScreen />}
-      <div className="w-full h-screen bg-blue-600" />
+      <div className="h-screen w-full bg-blue-700" />
     </>
   );
 }

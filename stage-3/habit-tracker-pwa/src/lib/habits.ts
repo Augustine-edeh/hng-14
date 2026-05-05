@@ -1,32 +1,35 @@
 import { Habit } from "@/types/habit";
-import { addHabit, updateHabit, deleteHabit, getHabits } from "./storage";
+import { addHabit, deleteHabit, getHabits, updateHabit } from "./storage";
 
 export function toggleHabitCompletion(habit: Habit, date: string): Habit {
-  const completions = [...habit.completions];
-  const dateIndex = completions.indexOf(date);
+  const completions = new Set(habit.completions);
 
-  if (dateIndex > -1) {
-    completions.splice(dateIndex, 1);
+  if (completions.has(date)) {
+    completions.delete(date);
   } else {
-    completions.push(date);
+    completions.add(date);
   }
 
   return {
     ...habit,
-    completions,
+    completions: Array.from(completions).sort(),
   };
 }
 
 export function createHabit(
   userId: string,
   name: string,
-  description?: string,
+  description = "",
 ): Habit {
   const habit: Habit = {
-    id: `habit-${Date.now()}`,
+    id:
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `habit-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     userId,
     name,
     description,
+    frequency: "daily",
     createdAt: new Date().toISOString(),
     completions: [],
   };
@@ -50,7 +53,9 @@ export function editHabit(
     ...updates,
     id: habit.id,
     userId: habit.userId,
+    frequency: "daily",
     createdAt: habit.createdAt,
+    completions: habit.completions,
   };
 
   updateHabit(updated);

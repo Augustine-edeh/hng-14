@@ -23,9 +23,13 @@ export function signup(
 
   // Create user
   const user: User = {
-    id: `user-${Date.now()}`,
+    id:
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `user-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     email,
-    password, // In production, this would be hashed
+    password,
+    createdAt: new Date().toISOString(),
   };
 
   addUser(user);

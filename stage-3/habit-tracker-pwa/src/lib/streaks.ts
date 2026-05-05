@@ -1,22 +1,29 @@
-export function calculateCurrentStreak(completions: string[]): number {
-  if (!completions || completions.length === 0) return 0;
+function getToday(): string {
+  return new Date().toISOString().split("T")[0];
+}
 
-  const dates = completions
-    .map((c) => new Date(c).getTime())
-    .sort((a, b) => b - a);
+function previousDate(date: string): string {
+  const [year, month, day] = date.split("-").map(Number);
+  const current = new Date(Date.UTC(year, month - 1, day));
+  current.setUTCDate(current.getUTCDate() - 1);
+  return current.toISOString().split("T")[0];
+}
 
-  if (dates.length === 0) return 0;
+export function calculateCurrentStreak(
+  completions: string[],
+  today = getToday(),
+): number {
+  if (!Array.isArray(completions) || completions.length === 0) return 0;
 
-  let streak = 1;
-  const oneDayMs = 24 * 60 * 60 * 1000;
+  const uniqueDates = new Set(completions);
+  if (!uniqueDates.has(today)) return 0;
 
-  for (let i = 0; i < dates.length - 1; i++) {
-    const diff = dates[i] - dates[i + 1];
-    if (diff === oneDayMs) {
-      streak++;
-    } else {
-      break;
-    }
+  let streak = 0;
+  let cursor = today;
+
+  while (uniqueDates.has(cursor)) {
+    streak += 1;
+    cursor = previousDate(cursor);
   }
 
   return streak;

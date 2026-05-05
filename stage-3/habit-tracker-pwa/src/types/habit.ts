@@ -1,8 +1,9 @@
-export interface Habit {
+export type Habit = {
   id: string;
   userId: string;
   name: string;
-  description?: string;
+  description: string;
+  frequency: "daily";
   createdAt: string;
-  completions: string[]; // ISO date strings
-}
+  completions: string[];
+};

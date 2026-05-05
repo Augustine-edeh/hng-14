@@ -25,7 +25,9 @@ export function HabitCard({
   return (
     <div
       data-testid={`habit-card-${slug}`}
-      className="bg-white border rounded-lg p-4 shadow-sm hover:shadow-md transition"
+      className={`rounded-lg border p-4 shadow-sm transition hover:shadow-md ${
+        isCompleted ? "border-green-300 bg-green-50" : "bg-white"
+      }`}
     >
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-lg font-semibold">{habit.name}</h3>

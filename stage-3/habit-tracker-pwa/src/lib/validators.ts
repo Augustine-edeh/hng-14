@@ -1,5 +1,29 @@
-export function validateHabitName(name: string): boolean {
-  if (!name || typeof name !== "string") return false;
-  const trimmed = name.trim();
-  return trimmed.length > 0 && trimmed.length <= 100;
+export function validateHabitName(name: string): {
+  valid: boolean;
+  value: string;
+  error: string | null;
+} {
+  const value = typeof name === "string" ? name.trim() : "";
+
+  if (value.length === 0) {
+    return {
+      valid: false,
+      value,
+      error: "Habit name is required",
+    };
+  }
+
+  if (value.length > 60) {
+    return {
+      valid: false,
+      value,
+      error: "Habit name must be 60 characters or fewer",
+    };
+  }
+
+  return {
+    valid: true,
+    value,
+    error: null,
+  };
 }
