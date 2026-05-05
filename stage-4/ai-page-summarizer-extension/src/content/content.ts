@@ -17,8 +17,12 @@ chrome.runtime.onMessage.addListener(
 
         if (!article) {
           sendResponse({
-            success: false,
-            error: "Could not extract readable content",
+            success: true,
+            data: {
+              title: document.title,
+              content: document.body.innerText ?? "No readable content found",
+              url: window.location.href,
+            },
           });
 
           return;
@@ -28,7 +32,7 @@ chrome.runtime.onMessage.addListener(
           success: true,
           data: {
             title: article.title ?? "Untitled Page",
-            content: article.textContent ?? "",
+            content: (article.textContent ?? "").slice(0, 15000),
             url: window.location.href,
           },
         });

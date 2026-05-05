@@ -26,6 +26,8 @@ export default function Popup() {
   const readingStats = pageData ? calculateReadingTime(pageData.content) : null;
 
   const handleSummarize = async () => {
+    if (loading) return;
+
     try {
       setLoading(true);
       setError("");
@@ -225,7 +227,7 @@ export default function Popup() {
 
             <div className="border-t border-slate-800" />
 
-            <div className="max-h-[320px] overflow-y-auto rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+            <div className="max-h-80 overflow-y-auto rounded-xl border border-slate-800 bg-slate-900/60 p-4">
               {loading ? (
                 <div className="space-y-3 animate-pulse">
                   <div className="h-4 rounded bg-slate-700" />
