@@ -1,362 +1,152 @@
 # AI Page Summarizer Chrome Extension
 
-A modern AI-powered Chrome Extension built with Manifest V3, React, Vite, and TypeScript that extracts webpage content and generates structured AI summaries.
-
 ## Overview
 
-AI Page Summarizer is a Chrome Extension that:
+AI Page Summarizer is a Chrome Extension built with Manifest V3 that extracts content from any webpage and generates a structured AI-powered summary.
 
-- Extracts meaningful content from webpages
-- Removes navigation/sidebar clutter using Mozilla Readability
-- Generates structured AI summaries
-- Displays concise insights and takeaways
-- Estimates article reading time
-- Caches summaries locally for performance optimization
-- Provides a polished and responsive popup UI
+It provides:
 
-The extension is built using Manifest V3 architecture and follows modular, production-minded engineering practices.
+- concise summaries
+- key insights
+- estimated reading time
+- fast cached responses
 
 ---
 
-# Features
+## Features
 
-## Core Features
-
-- AI-powered webpage summarization
-- Readability-based content extraction
-- Structured markdown summaries
-- Background service worker architecture
-- Popup-to-content-script messaging
-- Local summary caching with `chrome.storage`
+- Extracts readable content from webpages
+- AI-powered summarization
+- Markdown-formatted output
 - Reading time estimation
-- Copy summary to clipboard
-- Reset/clear summary flow
-- Loading states and skeleton loaders
-- Error handling and fallback extraction logic
-
-## UX Features
-
-- Responsive popup UI
-- Animated loading spinner
-- Skeleton loading placeholders
-- Cached summary indicators
-- Markdown-rendered summaries
-- Clean typography and spacing
-- Keyboard-friendly interactions
-
-## Performance Optimizations
-
-- URL-based summary caching
-- Content trimming before AI requests
-- Prevention of duplicate AI requests
-- Lightweight popup rendering
+- Copy-to-clipboard functionality
+- Cached summaries per URL
+- Graceful fallback for unsupported pages
+- Clean and responsive popup UI
 
 ---
 
-# Tech Stack
+## Tech Stack
 
-## Frontend
+- React + Vite + TypeScript
+- Chrome Extension Manifest V3
+- Mozilla Readability (content extraction)
+- OpenRouter API (AI summarization)
+- Tailwind CSS (UI styling)
 
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
+---
 
-## Chrome Extension
+## Architecture
 
-- Manifest V3
-- Chrome Runtime Messaging
-- Background Service Worker
-- Content Scripts
-- Chrome Storage API
+The extension follows a modular architecture:
+
+Popup → Content Script → Background Worker → AI API
+
+### Flow:
+
+1. User clicks "Summarize Page"
+2. Content script extracts readable content
+3. Popup checks cache (chrome.storage)
+4. If not cached:
+   - Background worker sends content to AI API
+
+5. Summary is returned and displayed
+6. Result is cached for future use
+
+---
 
 ## AI Integration
 
-- OpenRouter API
-- OpenAI-compatible chat completions API
+The extension uses OpenRouter to access LLM models.
 
-## Utilities
-
-- Mozilla Readability
-- React Markdown
-- Lucide React Icons
+- AI requests are handled in the background service worker
+- Content is trimmed to reduce token usage
+- Responses are structured using prompt engineering
+- Markdown formatting is rendered in the UI
 
 ---
 
-# Project Structure
+## Security Considerations
 
-```txt
-src/
-│
-├── background/
-│   └── background.ts
-│
-├── content/
-│   └── content.ts
-│
-├── popup/
-│   ├── Popup.tsx
-│   ├── main.tsx
-│   └── styles.css
-│
-├── services/
-│   └── ai.ts
-│
-├── storage/
-│   └── summaryStorage.ts
-│
-├── types/
-│   ├── ai.ts
-│   ├── env.d.ts
-│   └── messages.ts
-│
-├── utils/
-│   └── readingTime.ts
-│
-└── manifest.ts
-```
+- API keys are not exposed in content scripts
+- Environment variables are injected at build time
+- Minimal Chrome permissions are used
+- No user data is stored externally
+- All caching is done locally via chrome.storage
 
 ---
 
-# Architecture
+## Installation
 
-## High-Level Flow
-
-```txt
-Popup UI
-   ↓
-Content Script
-   ↓
-Extract Webpage Content
-   ↓
-Popup Receives Content
-   ↓
-Background Service Worker
-   ↓
-OpenRouter AI API
-   ↓
-AI Summary Returned
-   ↓
-Rendered in Popup UI
-```
-
-## Why Background Service Workers?
-
-AI requests are handled inside the background service worker instead of the popup/content script to:
-
-- Separate concerns cleanly
-- Centralize API communication
-- Improve maintainability
-- Reduce UI complexity
-- Align with proper extension architecture patterns
-
----
-
-# Content Extraction Strategy
-
-The extension uses Mozilla Readability to:
-
-- Extract primary article content
-- Remove ads and navigation clutter
-- Improve AI summarization quality
-
-Fallback extraction uses `document.body.innerText` for websites where Readability parsing fails.
-
----
-
-# AI Integration
-
-The extension uses OpenRouter's OpenAI-compatible API endpoint.
-
-## Summary Generation Flow
-
-1. Extract webpage content
-2. Trim oversized content payloads
-3. Send structured prompt to AI provider
-4. Receive markdown-formatted summary
-5. Render formatted markdown in popup
-
-## AI Prompt Structure
-
-The AI is instructed to generate:
-
-- Short Overview
-- Key Insights
-- Important Takeaways
-
-using markdown formatting for clean rendering.
-
----
-
-# Caching Strategy
-
-Summaries are cached using `chrome.storage.local`.
-
-## Cache Key
-
-Each summary is cached by webpage URL.
-
-Example:
-
-```json
-{
-  "https://example.com/article": "Generated AI summary"
-}
-```
-
-## Benefits
-
-- Faster repeat summaries
-- Reduced API calls
-- Lower token usage
-- Improved UX responsiveness
-
----
-
-# Security Decisions
-
-## API Key Handling
-
-- API keys are stored in `.env`
-- Secrets are excluded from Git tracking
-- AI requests are isolated to the background worker
-
-## Permissions
-
-The extension uses minimal required permissions:
-
-- `activeTab`
-- `storage`
-- `scripting`
-
-## Safe Rendering
-
-- Summaries are rendered via markdown rendering
-- No unsafe HTML injection is used
-- No direct DOM injection from AI responses
-
----
-
-# Trade-offs
-
-## Using OpenRouter Instead of Direct Gemini Integration
-
-OpenRouter was chosen for:
-
-- Easier API access
-- More reliable free-tier availability
-- OpenAI-compatible architecture
-- Faster development iteration
-
-## Local Extension Only
-
-This project is designed as a local installable Chrome Extension and is not intended for Chrome Web Store publishing.
-
----
-
-# Installation
-
-## 1. Clone Repository
-
-```bash
-git clone <repository-url>
-```
-
-## 2. Install Dependencies
+1. Clone the repository
+2. Install dependencies:
 
 ```bash
 npm install
 ```
 
-## 3. Configure Environment Variables
-
-Create a `.env` file in the project root:
+3. Add your API key in `.env`:
 
 ```env
-VITE_OPENROUTER_API_KEY=your_api_key_here
+VITE_OPENROUTER_API_KEY=your_api_key
 ```
 
-## 4. Build Extension
+4. Build the extension:
 
 ```bash
 npm run build
 ```
 
-## 5. Load Extension Into Chrome
+5. Open Chrome and go to:
 
-1. Open:
-
-```txt
 chrome://extensions
-```
 
-2. Enable:
-
-```txt
-Developer mode
-```
-
-3. Click:
-
-```txt
-Load unpacked
-```
-
-4. Select the generated:
-
-```txt
-dist/
-```
-
-folder.
+6. Enable Developer Mode
+7. Click "Load Unpacked"
+8. Select the `dist` folder
 
 ---
 
-# Usage
+## Usage
 
-1. Open any article or blog post
+1. Open any article or blog page
 2. Click the extension icon
-3. Click:
-
-```txt
-Summarize Page
-```
-
-4. Wait for AI summary generation
-5. Copy, review, or reset the summary
+3. Click "Summarize Page"
+4. View structured AI summary
+5. Copy or reuse summary instantly
 
 ---
 
-# Demo Checklist
+## Trade-offs
 
-The demo video should showcase:
-
-- Extension installation
-- Popup UI
-- Content extraction
-- AI summary generation
-- Loading states
-- Cached summaries
-- Copy summary feature
-- Reset functionality
-- Reading time estimation
+- Free-tier AI models may experience rate limits
+- Large pages are truncated to optimize performance
+- Some dynamic pages may not extract perfectly
+- No backend proxy (local-only implementation)
 
 ---
 
-# Future Improvements
+## Future Improvements
 
-Potential future enhancements include:
-
-- Multi-language summaries
-- Summary length selector
-- Highlighting key points directly on webpages
-- AI provider fallback system
-- Export summaries to markdown/PDF
+- Model fallback system
+- Highlight key points on page
+- User-controlled summary length
 - Dark/light theme toggle
-- Persistent user preferences
+- Backend proxy for secure API handling
 
 ---
 
-# License
+## Demo
 
-MIT
+Include a short demo video (2–5 minutes) showing:
+
+- installation
+- summarization flow
+- caching behavior
+- UI interactions
+
+---
+
+## Author
+
+Built by Augustine Edeh
