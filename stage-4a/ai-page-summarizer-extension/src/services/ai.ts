@@ -1,4 +1,4 @@
-const BACKEND_API_URL = "http://localhost:5000/summarize";
+const BACKEND_API_URL = "https://hng-14-task-4a.onrender.com/summarize";
 
 export async function generateSummary(content: string) {
   const response = await fetch(BACKEND_API_URL, {
