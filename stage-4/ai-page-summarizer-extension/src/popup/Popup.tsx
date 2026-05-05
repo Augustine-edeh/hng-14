@@ -1,8 +1,10 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { getCachedSummary, cacheSummary } from "../storage/summaryStorage";
-import { Loader2, Copy, Check, RotateCcw, FileText } from "lucide-react";
+import { Loader2, Copy, Check, RotateCcw } from "lucide-react";
 import { calculateReadingTime } from "../utils/readingTime";
+import SummarySkeleton from "./components/SummarySkeleton";
+import EmptyStateUI from "./components/EmptyStateUI";
 
 type ExtractedContent = {
   title: string;
@@ -12,15 +14,10 @@ type ExtractedContent = {
 
 export default function Popup() {
   const [loading, setLoading] = useState(false);
-
   const [pageData, setPageData] = useState<ExtractedContent | null>(null);
-
   const [error, setError] = useState("");
-
   const [summary, setSummary] = useState("");
-
   const [isCached, setIsCached] = useState(false);
-
   const [copied, setCopied] = useState(false);
 
   const readingStats = pageData ? calculateReadingTime(pageData.content) : null;
@@ -102,13 +99,9 @@ export default function Popup() {
 
   const handleReset = () => {
     setPageData(null);
-
     setSummary("");
-
     setError("");
-
     setIsCached(false);
-
     setCopied(false);
   };
 
@@ -140,22 +133,9 @@ export default function Popup() {
         {(pageData || summary || error) && (
           <button
             onClick={handleReset}
-            className="
-      flex
-      items-center
-      justify-center
-      rounded-xl
-      border
-      border-slate-700
-      bg-slate-900
-      px-4
-      py-3
-      text-slate-300
-      hover:bg-slate-800
-      transition-colors
-    "
+            className="flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-300 hover:bg-slate-800 transition-colors"
           >
-            <RotateCcw className="h-4 w-4" />
+            <RotateCcw className="size-4" />
           </button>
         )}
       </div>
@@ -166,20 +146,7 @@ export default function Popup() {
       )}
       <div className="mt-6 rounded-xl border border-slate-800 p-4">
         {!pageData ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="rounded-2xl bg-slate-900 p-4">
-              <FileText className="h-8 w-8 text-slate-500" />
-            </div>
-
-            <h3 className="mt-4 text-sm font-medium text-white">
-              No summary yet
-            </h3>
-
-            <p className="mt-2 max-w-xs text-sm text-slate-400">
-              Open an article or blog post and click "Summarize Page" to
-              generate an AI-powered summary.
-            </p>
-          </div>
+          <EmptyStateUI />
         ) : (
           <div className="space-y-4">
             <div className="flex items-start justify-between gap-3">
@@ -201,25 +168,21 @@ export default function Popup() {
                 )}
 
                 {isCached && (
-                  <p className="mt-2 text-xs text-green-400">Cached summary</p>
+                  <p className="w-fit px-2 py-0.5 rounded-full mt-2 text-xs bg-green-500/20 text-green-400">
+                    Cached summary
+                  </p>
                 )}
               </div>
 
               {summary && (
                 <button
                   onClick={handleCopySummary}
-                  className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs text-slate-300 hover:bg-slate-700 transition-colors"
+                  className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs text-slate-300 hover:bg-slate-700 transition-colors cursor-pointer"
                 >
                   {copied ? (
-                    <>
-                      <Check className="h-4 w-4 text-green-400" />
-                      Copied
-                    </>
+                    <Check className="size-4 text-green-400" />
                   ) : (
-                    <>
-                      <Copy className="h-4 w-4" />
-                      Copy
-                    </>
+                    <Copy className="size-4" />
                   )}
                 </button>
               )}
@@ -229,12 +192,7 @@ export default function Popup() {
 
             <div className="max-h-80 overflow-y-auto rounded-xl border border-slate-800 bg-slate-900/60 p-4">
               {loading ? (
-                <div className="space-y-3 animate-pulse">
-                  <div className="h-4 rounded bg-slate-700" />
-                  <div className="h-4 rounded bg-slate-700" />
-                  <div className="h-4 w-5/6 rounded bg-slate-700" />
-                  <div className="h-4 w-4/6 rounded bg-slate-700" />
-                </div>
+                <SummarySkeleton />
               ) : summary ? (
                 <div className="prose prose-invert prose-sm max-w-none prose-headings:text-white prose-p:text-slate-300 prose-strong:text-white prose-li:text-slate-300">
                   <ReactMarkdown>{summary}</ReactMarkdown>
