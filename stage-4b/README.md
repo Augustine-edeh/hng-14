@@ -39,9 +39,9 @@ Recipient browser
 - Public keys are stored by the WhisperBox backend.
 - Raw private keys never leave the browser.
 - Private keys are not stored in `localStorage`.
-- The app stores only the backend-held encrypted private key envelope and refresh token in IndexedDB.
-- The unwrapped private key lives in memory only and is cleared on logout or page reload.
-- A saved session must be unlocked with the account password before messages can be decrypted.
+- The app stores the backend-held encrypted private key envelope, refresh token, and a non-extractable browser `CryptoKey` in IndexedDB.
+- Raw private-key bytes are not stored in `localStorage` or exposed to application code after import.
+- Saved sessions restore under the hood on reload. If an older saved session has no stored `CryptoKey`, the app asks for the password once and then upgrades the saved session.
 
 ## Security Trade-offs
 

@@ -54,6 +54,7 @@ export type TokenResponse = {
 export type StoredSession = {
   refreshToken: string;
   user: UserProfile;
+  privateKey?: CryptoKey;
 };
 
 export type DecryptedMessage = MessageResponse & {

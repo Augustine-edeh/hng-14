@@ -114,6 +114,7 @@ export default function Home() {
   const [error, setError] = useState("");
   const [socketState, setSocketState] = useState<SocketState>("offline");
   const [busy, setBusy] = useState(false);
+  const [restoringSession, setRestoringSession] = useState(true);
 
   const isUnlocked = Boolean(user && accessToken && privateKey);
 
@@ -180,6 +181,7 @@ export default function Home() {
         setStoredSession(session);
         setUser(session.user);
         setRefreshToken(session.refreshToken);
+        if (session.privateKey) setPrivateKey(session.privateKey);
         try {
           const token = await refreshAccessToken(session.refreshToken);
           setAccessToken(token.access_token);
@@ -189,9 +191,8 @@ export default function Home() {
           setUser(null);
         }
       })
-      .catch(() =>
-        setError("Could not open IndexedDB for saved session data."),
-      );
+      .catch(() => setError("Could not open IndexedDB for saved session data."))
+      .finally(() => setRestoringSession(false));
   }, []);
 
   useEffect(() => {
@@ -282,6 +283,7 @@ export default function Home() {
     try {
       const username = authForm.username.trim();
       const password = authForm.password;
+      let sessionPrivateKey: CryptoKey | null = null;
       const response =
         authMode === "register"
           ? await (async () => {
@@ -294,18 +296,18 @@ export default function Home() {
                 wrapped_private_key: keyBundle.wrappedPrivateKey,
                 pbkdf2_salt: keyBundle.salt,
               });
+              sessionPrivateKey = keyBundle.privateKey;
               setPrivateKey(keyBundle.privateKey);
               return auth;
             })()
           : await (async () => {
               const auth = await login(username, password);
-              setPrivateKey(
-                await unlockPrivateKey(
-                  password,
-                  auth.user.wrapped_private_key,
-                  auth.user.pbkdf2_salt,
-                ),
+              sessionPrivateKey = await unlockPrivateKey(
+                password,
+                auth.user.wrapped_private_key,
+                auth.user.pbkdf2_salt,
               );
+              setPrivateKey(sessionPrivateKey);
               return auth;
             })();
 
@@ -315,10 +317,12 @@ export default function Home() {
       setStoredSession({
         refreshToken: response.refresh_token,
         user: response.user,
+        ...(sessionPrivateKey ? { privateKey: sessionPrivateKey } : {}),
       });
       await saveSession({
         refreshToken: response.refresh_token,
         user: response.user,
+        ...(sessionPrivateKey ? { privateKey: sessionPrivateKey } : {}),
       });
       setAuthForm(emptyAuth);
       setStatus("Secure session ready.");
@@ -345,6 +349,8 @@ export default function Home() {
         storedSession.user.pbkdf2_salt,
       );
       setPrivateKey(unlocked);
+      await saveSession({ ...storedSession, privateKey: unlocked });
+      setStoredSession({ ...storedSession, privateKey: unlocked });
       setUnlockPassword("");
       setStatus("Device unlocked.");
     } catch {
@@ -406,23 +412,11 @@ export default function Home() {
         recipientPublicKey,
         senderKey,
       );
-      const frame = { type: "message.send", to: activePartner.id, payload };
-      const socket = socketRef.current;
-      let stored: MessageResponse;
-
-      if (socket && socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify(frame));
-        stored = {
-          id: crypto.randomUUID(),
-          from_user_id: user.id,
-          to_user_id: activePartner.id,
-          payload,
-          delivered: false,
-          created_at: new Date().toISOString(),
-        };
-      } else {
-        stored = await sendMessageRest(activePartner.id, payload, accessToken);
-      }
+      const stored = await sendMessageRest(
+        activePartner.id,
+        payload,
+        accessToken,
+      );
 
       setDraft("");
       const decrypted = await decryptMessages([stored]);
@@ -435,6 +429,25 @@ export default function Home() {
     } finally {
       setBusy(false);
     }
+  }
+
+  if (restoringSession) {
+    return (
+      <main className={styles.authShell}>
+        <section className={styles.authPanel}>
+          <div className={styles.brandMark}>
+            <RefreshCw size={26} aria-hidden />
+          </div>
+          <div>
+            <p className={styles.kicker}>WhisperBox E2EE</p>
+            <h1>Restoring secure session</h1>
+            <p className={styles.authCopy}>
+              Checking your saved session and reopening the encrypted chat.
+            </p>
+          </div>
+        </section>
+      </main>
+    );
   }
 
   if (!isUnlocked || !user) {

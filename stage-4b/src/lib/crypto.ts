@@ -97,6 +97,12 @@ async function encryptPrivateKey(privateKey: CryptoKey, password: string, salt: 
   );
 }
 
+function importStoredPrivateKey(privateKeyBytes: ArrayBuffer) {
+  return crypto.subtle.importKey("pkcs8", privateKeyBytes, RSA_ALGORITHM, false, [
+    "decrypt",
+  ]);
+}
+
 async function decryptPrivateKey(
   password: string,
   wrappedPrivateKey: string,
@@ -120,9 +126,7 @@ async function decryptPrivateKey(
     base64ToBytes(envelope.data),
   );
 
-  return crypto.subtle.importKey("pkcs8", privateKeyBytes, RSA_ALGORITHM, false, [
-    "decrypt",
-  ]);
+  return importStoredPrivateKey(privateKeyBytes);
 }
 
 export async function createUserKeyBundle(password: string) {
@@ -132,13 +136,14 @@ export async function createUserKeyBundle(password: string) {
   ]);
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const publicKey = await crypto.subtle.exportKey("spki", keyPair.publicKey);
+  const privateKeyBytes = await crypto.subtle.exportKey("pkcs8", keyPair.privateKey);
   const wrappedPrivateKey = await encryptPrivateKey(keyPair.privateKey, password, salt);
 
   return {
     publicKey: bytesToBase64(publicKey),
     wrappedPrivateKey,
     salt: bytesToBase64(salt),
-    privateKey: keyPair.privateKey,
+    privateKey: await importStoredPrivateKey(privateKeyBytes),
   };
 }
 
