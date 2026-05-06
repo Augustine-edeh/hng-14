@@ -194,6 +194,65 @@
   background: rgba(250, 252, 250, 0.95);
 }
 
+.mobileScrim {
+  display: none;
+}
+
+.sidebarTopBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 14px 18px 8px;
+}
+
+.sidebarTopBar div {
+  min-width: 0;
+}
+
+.sidebarTopBar strong {
+  display: block;
+  color: #17201d;
+  font-size: 17px;
+}
+
+.sidebarTopBar span {
+  display: block;
+  margin-top: 3px;
+  color: #697570;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.sidebarNav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 8px 14px 0;
+}
+
+.sidebarNav button {
+  min-width: 0;
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 8px;
+  color: #43514c;
+  background: #e8eeea;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.sidebarNav .activeNavItem {
+  color: #ffffff;
+  background: #20765c;
+}
+
 .profileBar,
 .chatHeader {
   display: flex;
@@ -202,6 +261,13 @@
   min-height: 72px;
   padding: 14px 18px;
   border-bottom: 1px solid rgba(23, 32, 29, 0.1);
+}
+
+.profileBar {
+  margin-top: auto;
+  border-top: 1px solid rgba(23, 32, 29, 0.1);
+  border-bottom: 0;
+  background: rgba(255, 255, 255, 0.74);
 }
 
 .profileBar strong,
@@ -247,6 +313,12 @@
   border-radius: 8px;
   color: #43514c;
   background: #e8eeea;
+}
+
+.mobileCloseButton,
+.mobileMenuButton,
+.noThreadMenuButton {
+  display: none;
 }
 
 .securityStrip {
@@ -310,6 +382,26 @@
 .conversationList button {
   padding: 12px 10px;
   border-radius: 8px;
+}
+
+.conversationList button > span:nth-child(2),
+.searchResults button > span:nth-child(2),
+.profileBar div:nth-child(2),
+.chatHeader div:nth-child(3) {
+  min-width: 0;
+}
+
+.conversationList strong,
+.conversationList small,
+.searchResults strong,
+.searchResults small,
+.profileBar strong,
+.profileBar span,
+.chatHeader strong,
+.chatHeader span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .conversationList time {
@@ -453,6 +545,7 @@
 
 .noThread {
   grid-row: 1 / -1;
+  position: relative;
 }
 
 .noThread svg,
@@ -484,26 +577,151 @@
   }
 
   .sidebar {
-    min-height: auto;
-    max-height: 44dvh;
-    border-right: 0;
-    border-bottom: 1px solid rgba(23, 32, 29, 0.1);
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 30;
+    width: min(88vw, 360px);
+    min-height: 100dvh;
+    max-height: none;
+    border-right: 1px solid rgba(23, 32, 29, 0.14);
+    border-bottom: 0;
+    box-shadow: 22px 0 44px rgba(23, 32, 29, 0.18);
+    transform: translateX(-104%);
+    transition: transform 180ms ease;
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .mobileScrim {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: block;
+    pointer-events: none;
+    opacity: 0;
+    background: rgba(10, 18, 15, 0.38);
+    transition: opacity 180ms ease;
+  }
+
+  .mobileScrimOpen {
+    pointer-events: auto;
+    opacity: 1;
+  }
+
+  .mobileCloseButton,
+  .mobileMenuButton,
+  .noThreadMenuButton {
+    display: grid;
+  }
+
+  .sidebarTopBar {
+    padding-top: max(14px, env(safe-area-inset-top));
+  }
+
+  .chatHeader {
+    min-height: 64px;
+    padding: 10px 12px;
+  }
+
+  .chatHeader .avatar {
+    width: 38px;
+    height: 38px;
+  }
+
+  .connectionBadge {
+    padding: 7px;
+    font-size: 0;
+  }
+
+  .connectionBadge svg {
+    flex: 0 0 auto;
   }
 
   .chatPane {
-    min-height: 56dvh;
+    min-height: 100dvh;
   }
 
   .messageScroller {
-    padding: 14px;
+    padding: 14px 10px;
   }
 
   .messageBubble {
-    max-width: 88%;
+    max-width: 86%;
+  }
+
+  .messageBubble footer {
+    flex-wrap: wrap;
+  }
+
+  .composer {
+    grid-template-columns: minmax(0, 1fr) 44px;
+    gap: 8px;
+    padding: 10px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+
+  .composer textarea {
+    min-height: 44px;
+    padding: 12px;
+  }
+
+  .sendButton {
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+  }
+
+  .noThreadMenuButton {
+    position: absolute;
+    top: max(12px, env(safe-area-inset-top));
+    left: 12px;
+  }
+
+  .noThread {
+    padding: 72px 20px 24px;
+  }
+
+  .toast {
+    right: 10px;
+    bottom: 70px;
+    max-width: calc(100% - 20px);
   }
 
   .authPanel h1,
   .noThread h1 {
     font-size: 28px;
+  }
+}
+
+@media (max-width: 420px) {
+  .authShell {
+    padding: 14px;
+  }
+
+  .authPanel {
+    padding: 20px;
+  }
+
+  .sidebar {
+    width: 92vw;
+  }
+
+  .sidebarNav button {
+    min-height: 44px;
+  }
+
+  .securityStrip {
+    align-items: flex-start;
+  }
+
+  .profileBar,
+  .chatHeader {
+    gap: 10px;
+  }
+
+  .messageBubble {
+    max-width: 92%;
   }
 }

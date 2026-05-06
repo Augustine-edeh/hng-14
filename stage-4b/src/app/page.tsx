@@ -7,12 +7,16 @@ import {
   KeyRound,
   Lock,
   LogOut,
+  Menu,
   MessageCircle,
+  MessagesSquare,
   RefreshCw,
   Search,
   Send,
   ShieldCheck,
+  Users,
   UserPlus,
+  X,
 } from "lucide-react";
 import {
   FormEvent,
@@ -54,6 +58,7 @@ import styles from "./page.module.css";
 
 type AuthMode = "login" | "register";
 type SocketState = "offline" | "connecting" | "online";
+type SidebarView = "chats" | "users";
 
 const emptyAuth = {
   username: "",
@@ -115,6 +120,8 @@ export default function Home() {
   const [socketState, setSocketState] = useState<SocketState>("offline");
   const [busy, setBusy] = useState(false);
   const [restoringSession, setRestoringSession] = useState(true);
+  const [sidebarView, setSidebarView] = useState<SidebarView>("chats");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const isUnlocked = Boolean(user && accessToken && privateKey);
 
@@ -268,6 +275,16 @@ export default function Home() {
           )
         : null,
     [activePartner, conversations],
+  );
+
+  const handleSelectPartner = useCallback(
+    (partner: UserPublicInfo) => {
+      setSearchQuery("");
+      setSearchResults([]);
+      setSidebarOpen(false);
+      loadThread(partner);
+    },
+    [loadThread],
   );
 
   async function handleAuth(event: FormEvent<HTMLFormElement>) {
@@ -593,23 +610,46 @@ export default function Home() {
 
   return (
     <main className={styles.appShell}>
-      <aside className={styles.sidebar}>
-        <header className={styles.profileBar}>
-          <div className={styles.avatar}>
-            {displayInitial(user.display_name)}
-          </div>
+      <div
+        className={`${styles.mobileScrim} ${sidebarOpen ? styles.mobileScrimOpen : ""}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+      <aside
+        className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}
+        aria-label="Workspace navigation"
+      >
+        <header className={styles.sidebarTopBar}>
           <div>
-            <strong>{user.display_name}</strong>
-            <span>@{user.username}</span>
+            <strong>WhisperBox</strong>
+            <span>{sidebarView === "chats" ? "Chats" : "Users"}</span>
           </div>
           <button
-            className={styles.iconButton}
-            onClick={handleLogout}
-            title="Log out"
+            className={`${styles.iconButton} ${styles.mobileCloseButton}`}
+            onClick={() => setSidebarOpen(false)}
+            title="Close menu"
           >
-            <LogOut size={18} aria-hidden />
+            <X size={18} aria-hidden />
           </button>
         </header>
+
+        <nav className={styles.sidebarNav} aria-label="Chat sections">
+          <button
+            className={sidebarView === "chats" ? styles.activeNavItem : ""}
+            onClick={() => setSidebarView("chats")}
+            type="button"
+          >
+            <MessagesSquare size={18} aria-hidden />
+            Chats
+          </button>
+          <button
+            className={sidebarView === "users" ? styles.activeNavItem : ""}
+            onClick={() => setSidebarView("users")}
+            type="button"
+          >
+            <Users size={18} aria-hidden />
+            Users
+          </button>
+        </nav>
 
         <div className={styles.securityStrip}>
           <ShieldCheck size={18} aria-hidden />
@@ -628,16 +668,14 @@ export default function Home() {
           />
         </label>
 
-        {searchResults.length > 0 ? (
+        {sidebarView === "chats" &&
+        searchQuery.trim() &&
+        searchResults.length > 0 ? (
           <div className={styles.searchResults}>
             {searchResults.map((result) => (
               <button
                 key={result.id}
-                onClick={() => {
-                  setSearchQuery("");
-                  setSearchResults([]);
-                  loadThread(result);
-                }}
+                onClick={() => handleSelectPartner(result)}
               >
                 <span className={styles.smallAvatar}>
                   {displayInitial(result.display_name)}
@@ -651,47 +689,108 @@ export default function Home() {
           </div>
         ) : null}
 
-        <nav className={styles.conversationList} aria-label="Conversations">
-          {conversations.length === 0 ? (
-            <div className={styles.emptyList}>
-              <MessageCircle size={22} aria-hidden />
-              <p>Search for a teammate to start an encrypted chat.</p>
-            </div>
-          ) : (
-            conversations.map((conversation) => (
-              <button
-                key={conversation.user_id}
-                className={
-                  activePartner?.id === conversation.user_id
-                    ? styles.activeConversation
-                    : ""
-                }
-                onClick={() =>
-                  loadThread({
-                    id: conversation.user_id,
-                    username: conversation.username,
-                    display_name: conversation.display_name,
-                  })
-                }
-              >
-                <span className={styles.smallAvatar}>
-                  {displayInitial(conversation.display_name)}
-                </span>
-                <span>
-                  <strong>{conversation.display_name}</strong>
-                  <small>@{conversation.username}</small>
-                </span>
-                <time>{formatTime(conversation.last_message_at)}</time>
-              </button>
-            ))
-          )}
-        </nav>
+        {sidebarView === "chats" ? (
+          <nav className={styles.conversationList} aria-label="Conversations">
+            {conversations.length === 0 ? (
+              <div className={styles.emptyList}>
+                <MessageCircle size={22} aria-hidden />
+                <p>Search for a teammate to start an encrypted chat.</p>
+              </div>
+            ) : (
+              conversations.map((conversation) => (
+                <button
+                  key={conversation.user_id}
+                  className={
+                    activePartner?.id === conversation.user_id
+                      ? styles.activeConversation
+                      : ""
+                  }
+                  onClick={() =>
+                    handleSelectPartner({
+                      id: conversation.user_id,
+                      username: conversation.username,
+                      display_name: conversation.display_name,
+                    })
+                  }
+                >
+                  <span className={styles.smallAvatar}>
+                    {displayInitial(conversation.display_name)}
+                  </span>
+                  <span>
+                    <strong>{conversation.display_name}</strong>
+                    <small>@{conversation.username}</small>
+                  </span>
+                  <time>{formatTime(conversation.last_message_at)}</time>
+                </button>
+              ))
+            )}
+          </nav>
+        ) : (
+          <nav className={styles.conversationList} aria-label="Users">
+            {searchQuery.trim().length === 0 ? (
+              <div className={styles.emptyList}>
+                <Users size={22} aria-hidden />
+                <p>Search by name or username to list platform users.</p>
+              </div>
+            ) : searchResults.length === 0 ? (
+              <div className={styles.emptyList}>
+                <Search size={22} aria-hidden />
+                <p>No users matched that search.</p>
+              </div>
+            ) : (
+              searchResults.map((result) => (
+                <button
+                  key={result.id}
+                  className={
+                    activePartner?.id === result.id
+                      ? styles.activeConversation
+                      : ""
+                  }
+                  onClick={() => handleSelectPartner(result)}
+                >
+                  <span className={styles.smallAvatar}>
+                    {displayInitial(result.display_name)}
+                  </span>
+                  <span>
+                    <strong>{result.display_name}</strong>
+                    <small>@{result.username}</small>
+                  </span>
+                  <MessageCircle size={16} aria-hidden />
+                </button>
+              ))
+            )}
+          </nav>
+        )}
+
+        <footer className={styles.profileBar}>
+          <div className={styles.avatar}>
+            {displayInitial(user.display_name)}
+          </div>
+          <div>
+            <strong>{user.display_name}</strong>
+            <span>@{user.username}</span>
+          </div>
+          <button
+            className={styles.iconButton}
+            onClick={handleLogout}
+            title="Log out"
+          >
+            <LogOut size={18} aria-hidden />
+          </button>
+        </footer>
       </aside>
 
       <section className={styles.chatPane}>
         {activePartner ? (
           <>
             <header className={styles.chatHeader}>
+              <button
+                className={`${styles.iconButton} ${styles.mobileMenuButton}`}
+                onClick={() => setSidebarOpen(true)}
+                title="Open menu"
+              >
+                <Menu size={19} aria-hidden />
+              </button>
               <div className={styles.avatar}>
                 {displayInitial(activePartner.display_name)}
               </div>
@@ -763,6 +862,13 @@ export default function Home() {
           </>
         ) : (
           <div className={styles.noThread}>
+            <button
+              className={`${styles.iconButton} ${styles.noThreadMenuButton}`}
+              onClick={() => setSidebarOpen(true)}
+              title="Open menu"
+            >
+              <Menu size={20} aria-hidden />
+            </button>
             <ShieldCheck size={48} aria-hidden />
             <h1>Choose a conversation</h1>
             <p>
