@@ -50,15 +50,12 @@ export function AuthScreen({
   return (
     <main className={styles.authShell}>
       <section className={styles.authPanel}>
-        <div className={styles.brandMark}>
-          <Lock size={26} aria-hidden />
-        </div>
         <div>
-          <p className={styles.kicker}>WhisprApp E2EE</p>
+          <p className={`${styles.kicker} text-center`}>WhisprApp</p>
           <h1>
             {hasSavedSession
               ? "Unlock this device"
-              : "Private messages, actually private."}
+              : "Private messages you can trust."}
           </h1>
         </div>
 
@@ -70,7 +67,9 @@ export function AuthScreen({
                 <input
                   type={showUnlockPassword ? "text" : "password"}
                   value={unlockPassword}
-                  onChange={(event) => onUnlockPasswordChange(event.target.value)}
+                  onChange={(event) =>
+                    onUnlockPasswordChange(event.target.value)
+                  }
                   placeholder={`Password for @${user?.username}`}
                   required
                 />
@@ -94,7 +93,11 @@ export function AuthScreen({
               <KeyRound size={18} aria-hidden />
               Unlock private key
             </button>
-            <button type="button" className={styles.textButton} onClick={onLogout}>
+            <button
+              type="button"
+              className={styles.textButton}
+              onClick={onLogout}
+            >
               Use another account
             </button>
           </form>

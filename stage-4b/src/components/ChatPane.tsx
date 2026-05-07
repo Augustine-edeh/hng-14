@@ -133,9 +133,10 @@ export function ChatPane({
               onChange={(event) => onDraftChange(event.target.value)}
               placeholder="Write an encrypted message"
               rows={1}
+              className="!rounded-xl relative pr-10"
             />
             <button
-              className={styles.sendButton}
+              className={`${styles.sendButton} rounded-full transition enabled:hover:bg-emerald-400/90`}
               disabled={busy || !draft.trim()}
               title="Send"
             >
