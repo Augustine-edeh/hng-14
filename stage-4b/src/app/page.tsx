@@ -561,36 +561,40 @@ export default function Home() {
         }
         onViewChange={setSidebarView}
       />
-      <Sidebar
-        activePartner={activePartner}
-        chatSearchQuery={chatSearchQuery}
-        conversations={conversations}
-        isOpen={sidebarOpen}
-        sidebarView={sidebarView}
-        userSearchQuery={userSearchQuery}
-        userSearchResults={userSearchResults}
-        onChatSearchChange={setChatSearchQuery}
-        onClose={() => setSidebarOpen(false)}
-        onPartnerSelect={handleSelectPartner}
-        onUserSearchChange={setUserSearchQuery}
-      />
-      <ChatPane
-        activePartner={activePartner}
-        bottomRef={bottomRef}
-        busy={busy}
-        draft={draft}
-        draftRef={draftRef}
-        messages={messages}
-        partnerOnline={
-          activePartner ? (presenceByUserId[activePartner.id] ?? null) : null
-        }
-        socketState={socketState}
-        user={user}
-        onAccountMenuToggle={() => setProfileMenuOpen((current) => !current)}
-        onDraftChange={setDraft}
-        onMenuOpen={() => setSidebarOpen(true)}
-        onSend={handleSend}
-      />
+      <div>
+        <p className="bg-red-500">Main section</p>
+        <Sidebar
+          activePartner={activePartner}
+          chatSearchQuery={chatSearchQuery}
+          conversations={conversations}
+          isOpen={sidebarOpen}
+          sidebarView={sidebarView}
+          userSearchQuery={userSearchQuery}
+          userSearchResults={userSearchResults}
+          onChatSearchChange={setChatSearchQuery}
+          onClose={() => setSidebarOpen(false)}
+          onPartnerSelect={handleSelectPartner}
+          onUserSearchChange={setUserSearchQuery}
+        />
+        <ChatPane
+          activePartner={activePartner}
+          bottomRef={bottomRef}
+          busy={busy}
+          draft={draft}
+          draftRef={draftRef}
+          messages={messages}
+          partnerOnline={
+            activePartner ? (presenceByUserId[activePartner.id] ?? null) : null
+          }
+          socketState={socketState}
+          user={user}
+          onAccountMenuToggle={() => setProfileMenuOpen((current) => !current)}
+          onDraftChange={setDraft}
+          onMenuOpen={() => setSidebarOpen(true)}
+          onSend={handleSend}
+        />
+      </div>
+
       {profileMenuOpen ? (
         <ProfileMenu
           menuRef={profileMenuRef}

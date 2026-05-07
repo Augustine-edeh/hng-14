@@ -21,7 +21,10 @@ export function AppRail({
   onViewChange,
 }: AppRailProps) {
   return (
-    <nav className={styles.desktopRail} aria-label="Chat sections">
+    <nav
+      className={`${styles.desktopRail} bg-red-500`}
+      aria-label="Chat sections"
+    >
       <div className={styles.railBrand}>
         <MessageCircle size={24} aria-hidden />
       </div>
