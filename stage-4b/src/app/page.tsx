@@ -1,24 +1,6 @@
 "use client";
 
 import {
-  AlertTriangle,
-  CheckCircle2,
-  Circle,
-  KeyRound,
-  Lock,
-  LogOut,
-  Menu,
-  MessageCircle,
-  MessagesSquare,
-  RefreshCw,
-  Search,
-  Send,
-  ShieldCheck,
-  Users,
-  UserPlus,
-  X,
-} from "lucide-react";
-import {
   FormEvent,
   useCallback,
   useEffect,
@@ -26,6 +8,14 @@ import {
   useRef,
   useState,
 } from "react";
+import { toast } from "@/components/ui/sonner";
+import { AppRail } from "@/components/AppRail";
+import { AuthScreen } from "@/components/AuthScreen";
+import { ChatPane } from "@/components/ChatPane";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { ProfileMenu } from "@/components/ProfileMenu";
+import { Sidebar } from "@/components/Sidebar";
+import { SplashScreen } from "@/components/SplashScreen";
 import {
   getConversationMessages,
   getConversations,
@@ -45,6 +35,15 @@ import {
   importPublicKey,
   unlockPrivateKey,
 } from "@/lib/crypto";
+import {
+  AuthMode,
+  emptyAuth,
+  normalizePresenceMessage,
+  normalizeWsMessage,
+  SidebarView,
+  SocketState,
+  ThemeMode,
+} from "@/lib/chat-ui";
 import { clearSession, loadSession, saveSession } from "@/lib/storage";
 import {
   ConversationSummary,
@@ -56,47 +55,13 @@ import {
 } from "@/lib/types";
 import styles from "./page.module.css";
 
-type AuthMode = "login" | "register";
-type SocketState = "offline" | "connecting" | "online";
-type SidebarView = "chats" | "users";
-
-const emptyAuth = {
-  username: "",
-  displayName: "",
-  password: "",
-};
-
-function displayInitial(name: string) {
-  return name.trim().charAt(0).toUpperCase() || "W";
-}
-
-function formatTime(value: string | null) {
-  if (!value) return "";
-  return new Intl.DateTimeFormat(undefined, {
-    hour: "2-digit",
-    minute: "2-digit",
-    month: "short",
-    day: "numeric",
-  }).format(new Date(value));
-}
-
-function normalizeWsMessage(event: MessageEvent): MessageResponse | null {
-  try {
-    const frame = JSON.parse(event.data as string);
-    if (frame?.type === "message.receive" && frame.message)
-      return frame.message;
-    if (frame?.event === "message.receive" && frame.payload)
-      return frame.payload;
-    if (frame?.payload?.ciphertext && frame?.from_user_id) return frame;
-  } catch {
-    return null;
-  }
-  return null;
-}
-
 export default function Home() {
   const socketRef = useRef<WebSocket | null>(null);
+  const activePartnerRef = useRef<UserPublicInfo | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const draftRef = useRef<HTMLTextAreaElement | null>(null);
+  const profileMenuRef = useRef<HTMLDivElement | null>(null);
+
   const [authMode, setAuthMode] = useState<AuthMode>("login");
   const [authForm, setAuthForm] = useState(emptyAuth);
   const [unlockPassword, setUnlockPassword] = useState("");
@@ -112,18 +77,39 @@ export default function Home() {
     null,
   );
   const [messages, setMessages] = useState<DecryptedMessage[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<UserPublicInfo[]>([]);
+  const [chatSearchQuery, setChatSearchQuery] = useState("");
+  const [userSearchQuery, setUserSearchQuery] = useState("");
+  const [userSearchResults, setUserSearchResults] = useState<UserPublicInfo[]>(
+    [],
+  );
+  const [presenceByUserId, setPresenceByUserId] = useState<
+    Record<string, boolean>
+  >({});
   const [draft, setDraft] = useState("");
-  const [status, setStatus] = useState("");
-  const [error, setError] = useState("");
   const [socketState, setSocketState] = useState<SocketState>("offline");
   const [busy, setBusy] = useState(false);
   const [restoringSession, setRestoringSession] = useState(true);
   const [sidebarView, setSidebarView] = useState<SidebarView>("chats");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [showAuthPassword, setShowAuthPassword] = useState(false);
+  const [showUnlockPassword, setShowUnlockPassword] = useState(false);
+  const [theme, setTheme] = useState<ThemeMode>("dark");
 
   const isUnlocked = Boolean(user && accessToken && privateKey);
+
+  useEffect(() => {
+    activePartnerRef.current = activePartner;
+  }, [activePartner]);
+
+  useEffect(() => {
+    const savedTheme = window.localStorage.getItem("whisperbox-theme");
+    if (savedTheme === "light" || savedTheme === "dark") setTheme(savedTheme);
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem("whisperbox-theme", theme);
+  }, [theme]);
 
   const refreshConversationList = useCallback(async () => {
     if (!accessToken) return;
@@ -166,14 +152,11 @@ export default function Home() {
     async (partner: UserPublicInfo) => {
       if (!accessToken || !privateKey) return;
       setActivePartner(partner);
-      setStatus("Loading encrypted history...");
-      setError("");
       try {
         const history = await getConversationMessages(partner.id, accessToken);
         setMessages(await decryptMessages(history));
-        setStatus("");
       } catch (issue) {
-        setError(
+        toast.error(
           issue instanceof Error ? issue.message : "Could not load messages.",
         );
       }
@@ -198,7 +181,7 @@ export default function Home() {
           setUser(null);
         }
       })
-      .catch(() => setError("Could not open IndexedDB for saved session data."))
+      .catch(() => toast.error("Could not open saved session data."))
       .finally(() => setRestoringSession(false));
   }, []);
 
@@ -212,60 +195,118 @@ export default function Home() {
   useEffect(() => {
     if (!accessToken || !privateKey) return;
 
-    queueMicrotask(() => setSocketState("connecting"));
-    const socket = new WebSocket(
-      `${WS_BASE_URL}?token=${encodeURIComponent(accessToken)}`,
-    );
-    socketRef.current = socket;
+    let reconnectTimeout: number | undefined;
+    let closedByEffect = false;
 
-    socket.onopen = () => setSocketState("online");
-    socket.onclose = () => setSocketState("offline");
-    socket.onerror = () => setSocketState("offline");
-    socket.onmessage = async (event) => {
-      const incoming = normalizeWsMessage(event);
-      if (!incoming) return;
-      const decrypted = await decryptMessages([incoming]);
-      setMessages((current) => {
-        if (current.some((message) => message.id === incoming.id))
-          return current;
-        const belongsToOpenThread =
-          activePartner &&
-          [incoming.from_user_id, incoming.to_user_id].includes(
-            activePartner.id,
-          );
-        return belongsToOpenThread ? [...current, ...decrypted] : current;
-      });
-      refreshConversationList().catch(() => undefined);
-    };
+    function connect() {
+      setSocketState("connecting");
+      const socket = new WebSocket(
+        `${WS_BASE_URL}?token=${encodeURIComponent(accessToken)}`,
+      );
+      socketRef.current = socket;
+
+      socket.onopen = () => setSocketState("online");
+      socket.onerror = () => setSocketState("offline");
+      socket.onclose = () => {
+        setSocketState("offline");
+        if (!closedByEffect) {
+          reconnectTimeout = window.setTimeout(connect, 2500);
+        }
+      };
+      socket.onmessage = async (event) => {
+        const presence = normalizePresenceMessage(event);
+        if (presence) {
+          setPresenceByUserId((current) => ({
+            ...current,
+            [presence.userId]: presence.online,
+          }));
+          return;
+        }
+
+        const incoming = normalizeWsMessage(event);
+        if (!incoming) return;
+        const decrypted = await decryptMessages([incoming]);
+        setMessages((current) => {
+          if (current.some((message) => message.id === incoming.id))
+            return current;
+          const openPartner = activePartnerRef.current;
+          const belongsToOpenThread =
+            openPartner &&
+            [incoming.from_user_id, incoming.to_user_id].includes(
+              openPartner.id,
+            );
+          return belongsToOpenThread ? [...current, ...decrypted] : current;
+        });
+        refreshConversationList().catch(() => undefined);
+      };
+    }
+
+    connect();
 
     return () => {
-      socket.close();
+      closedByEffect = true;
+      if (reconnectTimeout) window.clearTimeout(reconnectTimeout);
+      socketRef.current?.close();
     };
-  }, [
-    accessToken,
-    activePartner,
-    decryptMessages,
-    privateKey,
-    refreshConversationList,
-  ]);
+  }, [accessToken, decryptMessages, privateKey, refreshConversationList]);
 
   useEffect(() => {
-    if (!accessToken || searchQuery.trim().length < 1) {
+    if (!accessToken || userSearchQuery.trim().length < 1) {
+      setUserSearchResults([]);
       return;
     }
 
     const timeout = window.setTimeout(() => {
-      searchUsers(searchQuery.trim(), accessToken)
-        .then(setSearchResults)
-        .catch(() => setSearchResults([]));
+      searchUsers(userSearchQuery.trim(), accessToken)
+        .then(setUserSearchResults)
+        .catch(() => setUserSearchResults([]));
     }, 250);
 
     return () => window.clearTimeout(timeout);
-  }, [accessToken, searchQuery]);
+  }, [accessToken, userSearchQuery]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
+
+  useEffect(() => {
+    const input = draftRef.current;
+    if (!input) return;
+    input.style.height = "auto";
+    input.style.height = `${input.scrollHeight}px`;
+  }, [draft]);
+
+  useEffect(() => {
+    if (!profileMenuOpen) return;
+
+    function closeOnOutsideClick(event: MouseEvent) {
+      const target = event.target;
+      if (
+        target instanceof Element &&
+        target.closest("[data-profile-trigger]")
+      ) {
+        return;
+      }
+      if (
+        profileMenuRef.current &&
+        target instanceof Node &&
+        !profileMenuRef.current.contains(target)
+      ) {
+        setProfileMenuOpen(false);
+      }
+    }
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setProfileMenuOpen(false);
+    }
+
+    document.addEventListener("mousedown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("mousedown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [profileMenuOpen]);
 
   const activeConversation = useMemo(
     () =>
@@ -279,8 +320,8 @@ export default function Home() {
 
   const handleSelectPartner = useCallback(
     (partner: UserPublicInfo) => {
-      setSearchQuery("");
-      setSearchResults([]);
+      setUserSearchQuery("");
+      setUserSearchResults([]);
       setSidebarOpen(false);
       loadThread(partner);
     },
@@ -290,11 +331,11 @@ export default function Home() {
   async function handleAuth(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true);
-    setError("");
-    setStatus(
+    toast.loading(
       authMode === "register"
         ? "Generating RSA keys..."
         : "Unlocking private key...",
+      { id: "auth" },
     );
 
     try {
@@ -342,10 +383,13 @@ export default function Home() {
         ...(sessionPrivateKey ? { privateKey: sessionPrivateKey } : {}),
       });
       setAuthForm(emptyAuth);
-      setStatus("Secure session ready.");
+      toast.success("Secure session ready.", { id: "auth" });
     } catch (issue) {
-      setError(
+      toast.error(
         issue instanceof Error ? issue.message : "Authentication failed.",
+        {
+          id: "auth",
+        },
       );
       setPrivateKey(null);
     } finally {
@@ -357,8 +401,7 @@ export default function Home() {
     event.preventDefault();
     if (!storedSession || !accessToken) return;
     setBusy(true);
-    setError("");
-    setStatus("Deriving wrapping key...");
+    toast.loading("Unlocking this device...", { id: "unlock" });
     try {
       const unlocked = await unlockPrivateKey(
         unlockPassword,
@@ -369,9 +412,11 @@ export default function Home() {
       await saveSession({ ...storedSession, privateKey: unlocked });
       setStoredSession({ ...storedSession, privateKey: unlocked });
       setUnlockPassword("");
-      setStatus("Device unlocked.");
+      toast.success("Device unlocked.", { id: "unlock" });
     } catch {
-      setError("That password could not unwrap this device key.");
+      toast.error("That password could not unwrap this device key.", {
+        id: "unlock",
+      });
     } finally {
       setBusy(false);
     }
@@ -395,7 +440,8 @@ export default function Home() {
       setActivePartner(null);
       setMessages([]);
       setBusy(false);
-      setStatus("");
+      setProfileMenuOpen(false);
+      toast.success("Signed out.");
     }
   }
 
@@ -403,7 +449,9 @@ export default function Home() {
     event.preventDefault();
     if (!activePartner || !user || !accessToken || !draft.trim()) return;
     setBusy(true);
-    setError("");
+
+    const text = draft.trim();
+    setDraft("");
 
     try {
       const { public_key: recipientKey } = await getUserPublicKey(
@@ -424,23 +472,42 @@ export default function Home() {
         );
       }
 
-      const payload = await encryptMessage(
-        draft.trim(),
-        recipientPublicKey,
-        senderKey,
-      );
-      const stored = await sendMessageRest(
-        activePartner.id,
-        payload,
-        accessToken,
-      );
+      const payload = await encryptMessage(text, recipientPublicKey, senderKey);
+      const socket = socketRef.current;
 
-      setDraft("");
-      const decrypted = await decryptMessages([stored]);
-      setMessages((current) => [...current, ...decrypted]);
-      await refreshConversationList();
+      if (socket?.readyState === WebSocket.OPEN) {
+        const optimisticMessage: DecryptedMessage = {
+          id: crypto.randomUUID(),
+          from_user_id: user.id,
+          to_user_id: activePartner.id,
+          payload,
+          delivered: false,
+          created_at: new Date().toISOString(),
+          text,
+        };
+        socket.send(
+          JSON.stringify({
+            type: "message.send",
+            event: "message.send",
+            to: activePartner.id,
+            payload,
+          }),
+        );
+        setMessages((current) => [...current, optimisticMessage]);
+        refreshConversationList().catch(() => undefined);
+      } else {
+        const stored = await sendMessageRest(
+          activePartner.id,
+          payload,
+          accessToken,
+        );
+        const decrypted = await decryptMessages([stored]);
+        setMessages((current) => [...current, ...decrypted]);
+        await refreshConversationList();
+      }
     } catch (issue) {
-      setError(
+      setDraft(text);
+      toast.error(
         issue instanceof Error ? issue.message : "Message could not be sent.",
       );
     } finally {
@@ -448,442 +515,98 @@ export default function Home() {
     }
   }
 
-  if (restoringSession) {
-    return (
-      <main className={styles.authShell}>
-        <section className={styles.authPanel}>
-          <div className={styles.brandMark}>
-            <RefreshCw size={26} aria-hidden />
-          </div>
-          <div>
-            <p className={styles.kicker}>WhisperBox E2EE</p>
-            <h1>Restoring secure session</h1>
-            <p className={styles.authCopy}>
-              Checking your saved session and reopening the encrypted chat.
-            </p>
-          </div>
-        </section>
-      </main>
-    );
+  function handleViewChange(view: SidebarView) {
+    setSidebarView(view);
+    setSidebarOpen(true);
   }
 
+  if (restoringSession) return <SplashScreen />;
+
   if (!isUnlocked || !user) {
-    const hasSavedSession = Boolean(user && accessToken && storedSession);
-
     return (
-      <main className={styles.authShell}>
-        <section className={styles.authPanel}>
-          <div className={styles.brandMark}>
-            <Lock size={26} aria-hidden />
-          </div>
-          <div>
-            <p className={styles.kicker}>WhisperBox E2EE</p>
-            <h1>
-              {hasSavedSession
-                ? "Unlock this device"
-                : "Private messages, actually private."}
-            </h1>
-            <p className={styles.authCopy}>
-              Messages are encrypted in your browser with AES-GCM and RSA-OAEP
-              before the WhisperBox backend stores them.
-            </p>
-          </div>
-
-          {hasSavedSession ? (
-            <form className={styles.authForm} onSubmit={handleUnlock}>
-              <label>
-                Password
-                <input
-                  type="password"
-                  value={unlockPassword}
-                  onChange={(event) => setUnlockPassword(event.target.value)}
-                  placeholder={`Password for @${user?.username}`}
-                  required
-                />
-              </label>
-              <button className={styles.primaryButton} disabled={busy}>
-                <KeyRound size={18} aria-hidden />
-                Unlock private key
-              </button>
-              <button
-                type="button"
-                className={styles.textButton}
-                onClick={handleLogout}
-              >
-                Use another account
-              </button>
-            </form>
-          ) : (
-            <>
-              <div
-                className={styles.segmented}
-                role="tablist"
-                aria-label="Authentication mode"
-              >
-                <button
-                  className={authMode === "login" ? styles.activeSegment : ""}
-                  onClick={() => setAuthMode("login")}
-                  type="button"
-                >
-                  Sign in
-                </button>
-                <button
-                  className={
-                    authMode === "register" ? styles.activeSegment : ""
-                  }
-                  onClick={() => setAuthMode("register")}
-                  type="button"
-                >
-                  Create account
-                </button>
-              </div>
-              <form className={styles.authForm} onSubmit={handleAuth}>
-                <label>
-                  Username
-                  <input
-                    value={authForm.username}
-                    onChange={(event) =>
-                      setAuthForm((current) => ({
-                        ...current,
-                        username: event.target.value,
-                      }))
-                    }
-                    placeholder="alice_92"
-                    minLength={authMode === "register" ? 3 : 1}
-                    maxLength={32}
-                    required
-                  />
-                </label>
-                {authMode === "register" ? (
-                  <label>
-                    Display name
-                    <input
-                      value={authForm.displayName}
-                      onChange={(event) =>
-                        setAuthForm((current) => ({
-                          ...current,
-                          displayName: event.target.value,
-                        }))
-                      }
-                      placeholder="Alice"
-                      maxLength={128}
-                      required
-                    />
-                  </label>
-                ) : null}
-                <label>
-                  Password
-                  <input
-                    type="password"
-                    value={authForm.password}
-                    onChange={(event) =>
-                      setAuthForm((current) => ({
-                        ...current,
-                        password: event.target.value,
-                      }))
-                    }
-                    minLength={authMode === "register" ? 8 : 1}
-                    maxLength={128}
-                    required
-                  />
-                </label>
-                <button className={styles.primaryButton} disabled={busy}>
-                  {authMode === "register" ? (
-                    <UserPlus size={18} />
-                  ) : (
-                    <KeyRound size={18} />
-                  )}
-                  {authMode === "register"
-                    ? "Generate keys and register"
-                    : "Sign in securely"}
-                </button>
-              </form>
-            </>
-          )}
-
-          {status ? <p className={styles.status}>{status}</p> : null}
-          {error ? <p className={styles.error}>{error}</p> : null}
-        </section>
-      </main>
+      <AuthScreen
+        authMode={authMode}
+        authForm={authForm}
+        busy={busy}
+        hasSavedSession={Boolean(user && accessToken && storedSession)}
+        showAuthPassword={showAuthPassword}
+        showUnlockPassword={showUnlockPassword}
+        unlockPassword={unlockPassword}
+        user={user}
+        onAuth={handleAuth}
+        onAuthFormChange={setAuthForm}
+        onAuthModeChange={setAuthMode}
+        onLogout={handleLogout}
+        onShowAuthPasswordChange={setShowAuthPassword}
+        onShowUnlockPasswordChange={setShowUnlockPassword}
+        onUnlock={handleUnlock}
+        onUnlockPasswordChange={setUnlockPassword}
+      />
     );
   }
 
   return (
-    <main className={styles.appShell}>
+    <main className={styles.appShell} data-theme={theme}>
       <div
         className={`${styles.mobileScrim} ${sidebarOpen ? styles.mobileScrimOpen : ""}`}
         onClick={() => setSidebarOpen(false)}
       />
-      <aside
-        className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}
-        aria-label="Workspace navigation"
-      >
-        <header className={styles.sidebarTopBar}>
-          <div>
-            <strong>WhisperBox</strong>
-            <span>{sidebarView === "chats" ? "Chats" : "Users"}</span>
-          </div>
-          <button
-            className={`${styles.iconButton} ${styles.mobileCloseButton}`}
-            onClick={() => setSidebarOpen(false)}
-            title="Close menu"
-          >
-            <X size={18} aria-hidden />
-          </button>
-        </header>
-
-        <nav className={styles.sidebarNav} aria-label="Chat sections">
-          <button
-            className={sidebarView === "chats" ? styles.activeNavItem : ""}
-            onClick={() => setSidebarView("chats")}
-            type="button"
-          >
-            <MessagesSquare size={18} aria-hidden />
-            Chats
-          </button>
-          <button
-            className={sidebarView === "users" ? styles.activeNavItem : ""}
-            onClick={() => setSidebarView("users")}
-            type="button"
-          >
-            <Users size={18} aria-hidden />
-            Users
-          </button>
-        </nav>
-
-        <div className={styles.securityStrip}>
-          <ShieldCheck size={18} aria-hidden />
-          <span>Private key is unlocked in memory only</span>
-        </div>
-
-        <label className={styles.searchBox}>
-          <Search size={17} aria-hidden />
-          <input
-            value={searchQuery}
-            onChange={(event) => {
-              setSearchQuery(event.target.value);
-              if (!event.target.value.trim()) setSearchResults([]);
-            }}
-            placeholder="Search users"
-          />
-        </label>
-
-        {sidebarView === "chats" &&
-        searchQuery.trim() &&
-        searchResults.length > 0 ? (
-          <div className={styles.searchResults}>
-            {searchResults.map((result) => (
-              <button
-                key={result.id}
-                onClick={() => handleSelectPartner(result)}
-              >
-                <span className={styles.smallAvatar}>
-                  {displayInitial(result.display_name)}
-                </span>
-                <span>
-                  <strong>{result.display_name}</strong>
-                  <small>@{result.username}</small>
-                </span>
-              </button>
-            ))}
-          </div>
-        ) : null}
-
-        {sidebarView === "chats" ? (
-          <nav className={styles.conversationList} aria-label="Conversations">
-            {conversations.length === 0 ? (
-              <div className={styles.emptyList}>
-                <MessageCircle size={22} aria-hidden />
-                <p>Search for a teammate to start an encrypted chat.</p>
-              </div>
-            ) : (
-              conversations.map((conversation) => (
-                <button
-                  key={conversation.user_id}
-                  className={
-                    activePartner?.id === conversation.user_id
-                      ? styles.activeConversation
-                      : ""
-                  }
-                  onClick={() =>
-                    handleSelectPartner({
-                      id: conversation.user_id,
-                      username: conversation.username,
-                      display_name: conversation.display_name,
-                    })
-                  }
-                >
-                  <span className={styles.smallAvatar}>
-                    {displayInitial(conversation.display_name)}
-                  </span>
-                  <span>
-                    <strong>{conversation.display_name}</strong>
-                    <small>@{conversation.username}</small>
-                  </span>
-                  <time>{formatTime(conversation.last_message_at)}</time>
-                </button>
-              ))
-            )}
-          </nav>
-        ) : (
-          <nav className={styles.conversationList} aria-label="Users">
-            {searchQuery.trim().length === 0 ? (
-              <div className={styles.emptyList}>
-                <Users size={22} aria-hidden />
-                <p>Search by name or username to list platform users.</p>
-              </div>
-            ) : searchResults.length === 0 ? (
-              <div className={styles.emptyList}>
-                <Search size={22} aria-hidden />
-                <p>No users matched that search.</p>
-              </div>
-            ) : (
-              searchResults.map((result) => (
-                <button
-                  key={result.id}
-                  className={
-                    activePartner?.id === result.id
-                      ? styles.activeConversation
-                      : ""
-                  }
-                  onClick={() => handleSelectPartner(result)}
-                >
-                  <span className={styles.smallAvatar}>
-                    {displayInitial(result.display_name)}
-                  </span>
-                  <span>
-                    <strong>{result.display_name}</strong>
-                    <small>@{result.username}</small>
-                  </span>
-                  <MessageCircle size={16} aria-hidden />
-                </button>
-              ))
-            )}
-          </nav>
-        )}
-
-        <footer className={styles.profileBar}>
-          <div className={styles.avatar}>
-            {displayInitial(user.display_name)}
-          </div>
-          <div>
-            <strong>{user.display_name}</strong>
-            <span>@{user.username}</span>
-          </div>
-          <button
-            className={styles.iconButton}
-            onClick={handleLogout}
-            title="Log out"
-          >
-            <LogOut size={18} aria-hidden />
-          </button>
-        </footer>
-      </aside>
-
-      <section className={styles.chatPane}>
-        {activePartner ? (
-          <>
-            <header className={styles.chatHeader}>
-              <button
-                className={`${styles.iconButton} ${styles.mobileMenuButton}`}
-                onClick={() => setSidebarOpen(true)}
-                title="Open menu"
-              >
-                <Menu size={19} aria-hidden />
-              </button>
-              <div className={styles.avatar}>
-                {displayInitial(activePartner.display_name)}
-              </div>
-              <div>
-                <strong>{activePartner.display_name}</strong>
-                <span>@{activePartner.username}</span>
-              </div>
-              <div className={styles.connectionBadge}>
-                {socketState === "online" ? (
-                  <CheckCircle2 size={16} aria-hidden />
-                ) : socketState === "connecting" ? (
-                  <RefreshCw size={16} aria-hidden />
-                ) : (
-                  <Circle size={16} aria-hidden />
-                )}
-                {socketState}
-              </div>
-            </header>
-
-            <div className={styles.messageScroller}>
-              {messages.length === 0 ? (
-                <div className={styles.emptyThread}>
-                  <Lock size={32} aria-hidden />
-                  <p>No readable messages yet.</p>
-                </div>
-              ) : (
-                messages.map((message) => {
-                  const mine = message.from_user_id === user.id;
-                  return (
-                    <article
-                      key={message.id}
-                      className={`${styles.messageBubble} ${mine ? styles.mine : styles.theirs}`}
-                    >
-                      {message.text ? (
-                        <p>{message.text}</p>
-                      ) : (
-                        <p className={styles.decryptFailure}>
-                          <AlertTriangle size={15} aria-hidden />
-                          {message.decryptError}
-                        </p>
-                      )}
-                      <footer>
-                        <Lock size={12} aria-hidden />
-                        <span>AES-GCM</span>
-                        <time>{formatTime(message.created_at)}</time>
-                      </footer>
-                    </article>
-                  );
-                })
-              )}
-              <div ref={bottomRef} />
-            </div>
-
-            <form className={styles.composer} onSubmit={handleSend}>
-              <textarea
-                value={draft}
-                onChange={(event) => setDraft(event.target.value)}
-                placeholder="Write an encrypted message"
-                rows={1}
-              />
-              <button
-                className={styles.sendButton}
-                disabled={busy || !draft.trim()}
-                title="Send"
-              >
-                <Send size={19} aria-hidden />
-              </button>
-            </form>
-          </>
-        ) : (
-          <div className={styles.noThread}>
-            <button
-              className={`${styles.iconButton} ${styles.noThreadMenuButton}`}
-              onClick={() => setSidebarOpen(true)}
-              title="Open menu"
-            >
-              <Menu size={20} aria-hidden />
-            </button>
-            <ShieldCheck size={48} aria-hidden />
-            <h1>Choose a conversation</h1>
-            <p>
-              Search users or select a thread. Plaintext stays in this browser;
-              the API receives only encrypted payloads.
-            </p>
-          </div>
-        )}
-
-        {activeConversation?.last_message_at ? null : null}
-        {status ? <p className={styles.toast}>{status}</p> : null}
-        {error ? (
-          <p className={`${styles.toast} ${styles.toastError}`}>{error}</p>
-        ) : null}
-      </section>
+      <AppRail
+        sidebarView={sidebarView}
+        theme={theme}
+        user={user}
+        onLogoutClick={() => setProfileMenuOpen((current) => !current)}
+        onThemeToggle={() =>
+          setTheme((current) => (current === "dark" ? "light" : "dark"))
+        }
+        onViewChange={setSidebarView}
+      />
+      <Sidebar
+        activePartner={activePartner}
+        chatSearchQuery={chatSearchQuery}
+        conversations={conversations}
+        isOpen={sidebarOpen}
+        sidebarView={sidebarView}
+        userSearchQuery={userSearchQuery}
+        userSearchResults={userSearchResults}
+        onChatSearchChange={setChatSearchQuery}
+        onClose={() => setSidebarOpen(false)}
+        onPartnerSelect={handleSelectPartner}
+        onUserSearchChange={setUserSearchQuery}
+      />
+      <ChatPane
+        activePartner={activePartner}
+        bottomRef={bottomRef}
+        busy={busy}
+        draft={draft}
+        draftRef={draftRef}
+        messages={messages}
+        partnerOnline={
+          activePartner ? (presenceByUserId[activePartner.id] ?? null) : null
+        }
+        socketState={socketState}
+        user={user}
+        onAccountMenuToggle={() => setProfileMenuOpen((current) => !current)}
+        onDraftChange={setDraft}
+        onMenuOpen={() => setSidebarOpen(true)}
+        onSend={handleSend}
+      />
+      {profileMenuOpen ? (
+        <ProfileMenu
+          menuRef={profileMenuRef}
+          user={user}
+          onLogout={handleLogout}
+        />
+      ) : null}
+      <MobileBottomNav
+        sidebarView={sidebarView}
+        theme={theme}
+        onThemeToggle={() =>
+          setTheme((current) => (current === "dark" ? "light" : "dark"))
+        }
+        onViewChange={handleViewChange}
+      />
+      {activeConversation?.last_message_at ? null : null}
     </main>
   );
 }
