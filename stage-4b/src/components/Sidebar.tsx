@@ -15,6 +15,7 @@ type SidebarProps = {
   onClose: () => void;
   onPartnerSelect: (partner: UserPublicInfo) => void;
   onUserSearchChange: (value: string) => void;
+  className?: string;
 };
 
 export function Sidebar({
@@ -29,6 +30,7 @@ export function Sidebar({
   onClose,
   onPartnerSelect,
   onUserSearchChange,
+  className,
 }: SidebarProps) {
   const filteredConversations = conversations.filter((conversation) => {
     const query = chatSearchQuery.trim().toLowerCase();
@@ -41,7 +43,7 @@ export function Sidebar({
 
   return (
     <aside
-      className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ""}`}
+      className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ""} ${className || ""}`}
       aria-label="Workspace navigation"
     >
       <header className={styles.sidebarTopBar}>
@@ -139,7 +141,9 @@ export function Sidebar({
               <button
                 key={result.id}
                 className={
-                  activePartner?.id === result.id ? styles.activeConversation : ""
+                  activePartner?.id === result.id
+                    ? styles.activeConversation
+                    : ""
                 }
                 onClick={() => onPartnerSelect(result)}
               >

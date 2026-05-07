@@ -10,7 +10,7 @@ export function SplashScreen() {
           <RefreshCw size={18} aria-hidden className={styles.splashSpinner} />
         </div>
         <div>
-          <p className={styles.kicker}>WhisperBox E2EE</p>
+          <p className={styles.kicker}>WhisprApp E2EE</p>
           <h1>Reopening your chats</h1>
           <p className={styles.authCopy}>
             Restoring your encrypted session on this device.

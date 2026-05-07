@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "WhisperBox Secure Messenger",
-  description: "End-to-end encrypted messaging client for WhisperBox.",
+  title: "WhisprApp",
+  description: "End-to-end encrypted messaging client for WhisprApp.",
 };
 
 export default function RootLayout({

@@ -54,7 +54,7 @@ export function AuthScreen({
           <Lock size={26} aria-hidden />
         </div>
         <div>
-          <p className={styles.kicker}>WhisperBox E2EE</p>
+          <p className={styles.kicker}>WhisprApp E2EE</p>
           <h1>
             {hasSavedSession
               ? "Unlock this device"

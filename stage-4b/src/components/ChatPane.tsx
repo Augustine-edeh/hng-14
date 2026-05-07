@@ -28,6 +28,7 @@ type ChatPaneProps = {
   onDraftChange: (value: string) => void;
   onMenuOpen: () => void;
   onSend: (event: FormEvent<HTMLFormElement>) => void;
+  className?: string;
 };
 
 export function ChatPane({
@@ -44,9 +45,10 @@ export function ChatPane({
   onDraftChange,
   onMenuOpen,
   onSend,
+  className,
 }: ChatPaneProps) {
   return (
-    <section className={styles.chatPane}>
+    <section className={`${styles.chatPane} ${className || ""}`}>
       {activePartner ? (
         <>
           <header className={styles.chatHeader}>

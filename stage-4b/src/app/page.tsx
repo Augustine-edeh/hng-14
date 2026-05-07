@@ -16,6 +16,7 @@ import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { ProfileMenu } from "@/components/ProfileMenu";
 import { Sidebar } from "@/components/Sidebar";
 import { SplashScreen } from "@/components/SplashScreen";
+import { WindowTitleBar } from "@/components/WindowTitleBar";
 import {
   getConversationMessages,
   getConversations,
@@ -103,12 +104,14 @@ export default function Home() {
   }, [activePartner]);
 
   useEffect(() => {
-    const savedTheme = window.localStorage.getItem("whisperbox-theme");
+    const savedTheme =
+      window.localStorage.getItem("whisprapp-theme") ??
+      window.localStorage.getItem("whisperbox-theme");
     if (savedTheme === "light" || savedTheme === "dark") setTheme(savedTheme);
   }, []);
 
   useEffect(() => {
-    window.localStorage.setItem("whisperbox-theme", theme);
+    window.localStorage.setItem("whisprapp-theme", theme);
   }, [theme]);
 
   const refreshConversationList = useCallback(async () => {
@@ -546,23 +549,24 @@ export default function Home() {
   }
 
   return (
-    <main className={styles.appShell} data-theme={theme}>
-      <div
-        className={`${styles.mobileScrim} ${sidebarOpen ? styles.mobileScrimOpen : ""}`}
-        onClick={() => setSidebarOpen(false)}
-      />
-      <AppRail
-        sidebarView={sidebarView}
-        theme={theme}
-        user={user}
-        onLogoutClick={() => setProfileMenuOpen((current) => !current)}
-        onThemeToggle={() =>
-          setTheme((current) => (current === "dark" ? "light" : "dark"))
-        }
-        onViewChange={setSidebarView}
-      />
-      <div>
-        <p className="bg-red-500">Main section</p>
+    <div className={styles.windowShell} data-theme={theme}>
+      <WindowTitleBar theme={theme} />
+      <main className={styles.appShell} data-theme={theme}>
+        <div
+          className={`${styles.mobileScrim} ${sidebarOpen ? styles.mobileScrimOpen : ""}`}
+          onClick={() => setSidebarOpen(false)}
+        />
+        <AppRail
+          sidebarView={sidebarView}
+          theme={theme}
+          user={user}
+          onLogoutClick={() => setProfileMenuOpen((current) => !current)}
+          onThemeToggle={() =>
+            setTheme((current) => (current === "dark" ? "light" : "dark"))
+          }
+          onViewChange={setSidebarView}
+          className="border-none"
+        />
         <Sidebar
           activePartner={activePartner}
           chatSearchQuery={chatSearchQuery}
@@ -575,6 +579,7 @@ export default function Home() {
           onClose={() => setSidebarOpen(false)}
           onPartnerSelect={handleSelectPartner}
           onUserSearchChange={setUserSearchQuery}
+          className="rounded-l-lg border !border-gray-300 dark:!border-gray-700"
         />
         <ChatPane
           activePartner={activePartner}
@@ -592,25 +597,26 @@ export default function Home() {
           onDraftChange={setDraft}
           onMenuOpen={() => setSidebarOpen(true)}
           onSend={handleSend}
+          className="border !border-gray-300 dark:!border-gray-700"
         />
-      </div>
 
-      {profileMenuOpen ? (
-        <ProfileMenu
-          menuRef={profileMenuRef}
-          user={user}
-          onLogout={handleLogout}
+        {profileMenuOpen ? (
+          <ProfileMenu
+            menuRef={profileMenuRef}
+            user={user}
+            onLogout={handleLogout}
+          />
+        ) : null}
+        <MobileBottomNav
+          sidebarView={sidebarView}
+          theme={theme}
+          onThemeToggle={() =>
+            setTheme((current) => (current === "dark" ? "light" : "dark"))
+          }
+          onViewChange={handleViewChange}
         />
-      ) : null}
-      <MobileBottomNav
-        sidebarView={sidebarView}
-        theme={theme}
-        onThemeToggle={() =>
-          setTheme((current) => (current === "dark" ? "light" : "dark"))
-        }
-        onViewChange={handleViewChange}
-      />
-      {activeConversation?.last_message_at ? null : null}
-    </main>
+        {activeConversation?.last_message_at ? null : null}
+      </main>
+    </div>
   );
 }
