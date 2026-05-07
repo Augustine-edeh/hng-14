@@ -5,12 +5,12 @@ export function SplashScreen() {
   return (
     <main className={styles.authShell}>
       <section className={`${styles.authPanel} ${styles.splashPanel}`}>
-        <div className={styles.splashMark}>
+        <div className={`${styles.splashMark} mx-auto`}>
           <MessageCircle size={30} aria-hidden />
           <RefreshCw size={18} aria-hidden className={styles.splashSpinner} />
         </div>
         <div>
-          <p className={styles.kicker}>WhisprApp E2EE</p>
+          <p className={`${styles.kicker} text-center`}>WhisprApp</p>
           <h1>Reopening your chats</h1>
           <p className={styles.authCopy}>
             Restoring your encrypted session on this device.

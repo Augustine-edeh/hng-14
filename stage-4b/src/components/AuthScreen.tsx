@@ -49,6 +49,8 @@ export function AuthScreen({
 }: AuthScreenProps) {
   return (
     <main className={styles.authShell}>
+      <p className="text-emerald-800">The secure messaging app for everyone.</p>
+
       <section className={styles.authPanel}>
         <div>
           <p className={`${styles.kicker} text-center`}>WhisprApp</p>
