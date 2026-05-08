@@ -54,7 +54,7 @@ export function AuthScreen({
       <section className={styles.authPanel}>
         <div>
           <p className={`${styles.kicker} text-center`}>WhisprApp</p>
-          <h1>
+          <h1 className="text-center">
             {hasSavedSession
               ? "Unlock this device"
               : "Private messages you can trust."}
@@ -111,7 +111,7 @@ export function AuthScreen({
               aria-label="Authentication mode"
             >
               <button
-                className={authMode === "login" ? styles.activeSegment : ""}
+                className={`${authMode === "login" ? styles.activeSegment : ""}`}
                 onClick={() => onAuthModeChange("login")}
                 type="button"
               >
@@ -122,7 +122,7 @@ export function AuthScreen({
                 onClick={() => onAuthModeChange("register")}
                 type="button"
               >
-                Create account
+                Sign up
               </button>
             </div>
             <form className={styles.authForm} onSubmit={onAuth}>

@@ -2,12 +2,13 @@ import {
   AlertTriangle,
   CheckCircle2,
   Circle,
+  FileText,
   Lock,
   Menu,
   MessageCircle,
   MoreVertical,
   RefreshCw,
-  Send,
+  SendHorizonal,
 } from "lucide-react";
 import { FormEvent, RefObject } from "react";
 import styles from "@/app/page.module.css";
@@ -140,7 +141,7 @@ export function ChatPane({
               disabled={busy || !draft.trim()}
               title="Send"
             >
-              <Send size={19} aria-hidden />
+              <SendHorizonal size={19} aria-hidden />
             </button>
           </form>
         </>
@@ -161,10 +162,10 @@ export function ChatPane({
           >
             <MoreVertical size={20} aria-hidden />
           </button>
-          <div className={styles.noThreadIcon}>
-            <MessageCircle size={42} aria-hidden />
+
+          <div className="size-40 !bg-gray-700 dark:bg-gray-600 rounded-xl grid place-items-center">
+            <FileText color="gray" />
           </div>
-          <h1>Choose a conversation</h1>
           <p>Search users or select a thread to get a conversation started.</p>
         </div>
       )}
