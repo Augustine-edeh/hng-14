@@ -1,4 +1,4 @@
-# WhisperBox Secure Messenger
+# WhisprApp
 
 A Next.js App Router client for the HNG Stage 4B end-to-end encrypted messaging task. The app talks to the WhisperBox backend at `https://whisperbox.koyeb.app/` and keeps plaintext on the client.
 
@@ -11,7 +11,7 @@ Browser / Next.js client
   | 2. Encrypt private key with password-derived AES-GCM key
   | 3. Encrypt each message with AES-GCM
   v
-WhisperBox API / WebSocket
+WhisprApp API / WebSocket
   |
   | Stores user identities, public keys, wrapped private keys,
   | refresh tokens, conversation metadata, and encrypted payload blobs
