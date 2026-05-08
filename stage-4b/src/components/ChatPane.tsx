@@ -8,7 +8,7 @@ import {
   MessageCircle,
   MoreVertical,
   RefreshCw,
-  Send,
+  SendHorizonal,
 } from "lucide-react";
 import { FormEvent, RefObject } from "react";
 import styles from "@/app/page.module.css";
@@ -141,7 +141,7 @@ export function ChatPane({
               disabled={busy || !draft.trim()}
               title="Send"
             >
-              <Send size={19} aria-hidden />
+              <SendHorizonal size={19} aria-hidden />
             </button>
           </form>
         </>
