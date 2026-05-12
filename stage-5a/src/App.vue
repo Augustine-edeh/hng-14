@@ -148,6 +148,7 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, computed } from "vue";
+import * as echarts from "echarts";
 import { useFlightStore } from "./stores/flightStore";
 import { useMetricsStore } from "./stores/metricsStore";
 import { useActivityStore } from "./stores/activityStore";
@@ -244,10 +245,7 @@ const fleetHealthChart = computed(() => ({
       ],
       type: "bar",
       itemStyle: {
-        color: new (window as any).echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: "#06b6d4" },
-          { offset: 1, color: "#0ea5e9" },
-        ]),
+        color: "#06b6d4",
       },
     },
   ],
