@@ -1,6 +1,8 @@
 <template>
-  <div class="chart-container">
-    <div class="chart-header">
+  <div class="chart-container glass-panel overflow-hidden">
+    <div
+      class="chart-header flex items-center justify-between p-4 border-b border-slate-700/30"
+    >
       <h3 class="text-lg font-semibold text-slate-200">{{ title }}</h3>
       <button
         @click="$emit('fullscreen')"
@@ -74,13 +76,13 @@ watch(
 </script>
 
 <style scoped>
-.chart-container {
+/* .chart-container {
   @apply glass-panel overflow-hidden;
-}
+} */
 
-.chart-header {
+/* .chart-header {
   @apply flex items-center justify-between p-4 border-b border-slate-700/30;
-}
+} */
 
 .chart-canvas {
   width: 100%;

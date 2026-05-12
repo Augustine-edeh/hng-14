@@ -1,5 +1,7 @@
 <template>
-  <div class="metric-card">
+  <div
+    class="metric-card glass-panel transition-all duration-300 hover:border-cyan-500/50 hover:bg-white/10"
+  >
     <div class="flex items-start justify-between mb-2">
       <div class="flex items-center gap-2">
         <div class="text-2xl">{{ icon }}</div>
@@ -53,11 +55,11 @@ const trendColor = computed(() => {
 </script>
 
 <style scoped>
-.metric-card {
+/* .metric-card {
   @apply glass-panel transition-all duration-300;
-}
+} */
 
-.metric-card:hover {
+/* .metric-card:hover {
   @apply border-cyan-500/50 bg-white/10;
-}
+} */
 </style>

@@ -1,8 +1,10 @@
 <template>
   <div class="glass-panel flex flex-col activity-feed-container">
-    <div class="feed-header">
+    <div
+      class="feed-header flex flex-col gap-3 p-4 border-b border-slate-700/30"
+    >
       <h3 class="text-lg font-semibold text-slate-200">Live Activity Feed</h3>
-      <div class="feed-controls">
+      <div class="feed-controls flex gap-2">
         <input
           v-model="searchQuery"
           type="text"
@@ -12,14 +14,18 @@
       </div>
     </div>
 
-    <div class="feed-content">
-      <div v-for="event in displayedEvents" :key="event.id" class="feed-item">
-        <div class="feed-timestamp">
+    <div class="feed-content flex-1 overflow-y-auto">
+      <div
+        v-for="event in displayedEvents"
+        :key="event.id"
+        class="feed-item p-4 border-b border-slate-700/20 hover:bg-slate-800/20 transition-colors"
+      >
+        <div class="feed-timestamp text-xs text-slate-500 mb-2">
           {{ formatRelativeTime(event.timestamp) }}
         </div>
 
-        <div class="feed-body">
-          <div class="feed-title-section">
+        <div class="feed-body space-y-2">
+          <div class="feed-title-section flex items-center gap-2 flex-wrap">
             <span
               v-if="event.severity"
               :class="getSeverityColor(event.severity)"
@@ -27,14 +33,21 @@
             >
               {{ event.severity }}
             </span>
-            <h4 class="feed-title">{{ event.title }}</h4>
+            <h4 class="feed-title text-sm font-semibold text-slate-200">
+              {{ event.title }}
+            </h4>
           </div>
-          <p class="feed-description">{{ event.description }}</p>
+          <p class="feed-description text-xs text-slate-400 line-clamp-2">
+            {{ event.description }}
+          </p>
         </div>
       </div>
     </div>
 
-    <div v-if="displayedEvents.length === 0" class="empty-state">
+    <div
+      v-if="displayedEvents.length === 0"
+      class="empty-state p-8 text-center text-slate-400"
+    >
       <p class="text-slate-400">No activity yet</p>
     </div>
   </div>
@@ -73,45 +86,45 @@ const displayedEvents = computed(() => {
 </script>
 
 <style scoped>
-.feed-header {
+/* .feed-header {
   @apply flex flex-col gap-3 p-4 border-b border-slate-700/30;
-}
+} */
 
-.feed-controls {
+/* .feed-controls {
   @apply flex gap-2;
-}
+} */
 
-.feed-content {
+/* .feed-content {
   @apply flex-1 overflow-y-auto;
-}
+} */
 
-.feed-item {
+/* .feed-item {
   @apply p-4 border-b border-slate-700/20 hover:bg-slate-800/20 transition-colors;
-}
+} */
 
-.feed-timestamp {
+/* .feed-timestamp {
   @apply text-xs text-slate-500 mb-2;
-}
+} */
 
-.feed-body {
+/* .feed-body {
   @apply space-y-2;
-}
+} */
 
-.feed-title-section {
+/* .feed-title-section {
   @apply flex items-center gap-2 flex-wrap;
-}
+} */
 
-.feed-title {
+/* .feed-title {
   @apply text-sm font-semibold text-slate-200;
-}
+} */
 
-.feed-description {
+/* .feed-description {
   @apply text-xs text-slate-400 line-clamp-2;
-}
+} */
 
-.empty-state {
+/* .empty-state {
   @apply p-8 text-center text-slate-400;
-}
+} */
 
 /* Custom scrollbar for feed */
 ::-webkit-scrollbar {

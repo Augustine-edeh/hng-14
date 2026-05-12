@@ -1,10 +1,12 @@
 <template>
-  <div class="flight-table-container">
-    <div class="table-header-section">
+  <div class="flight-table-container glass-panel flex flex-col">
+    <div
+      class="table-header-section flex items-center justify-between p-4 border-b border-slate-700/30"
+    >
       <h3 class="text-lg font-semibold text-slate-200">
         Live Flight Operations
       </h3>
-      <div class="search-box">
+      <div class="search-box flex-1 max-w-xs ml-4">
         <input
           v-model="searchQuery"
           type="text"
@@ -14,7 +16,7 @@
       </div>
     </div>
 
-    <div class="table-wrapper">
+    <div class="table-wrapper overflow-x-auto flex-1">
       <table class="w-full">
         <thead>
           <tr class="border-b border-slate-700/30">
@@ -33,7 +35,7 @@
             v-for="flight in displayedFlights"
             :key="flight.id"
             @click="selectFlight(flight.id)"
-            class="table-row hover:bg-slate-800/30 cursor-pointer transition-colors"
+            class="table-row border-b border-slate-700/20 hover:bg-slate-800/30 cursor-pointer transition-colors"
           >
             <td class="table-cell font-semibold text-cyan-400">
               {{ flight.flightNumber }}
@@ -70,7 +72,10 @@
       </table>
     </div>
 
-    <div v-if="displayedFlights.length === 0" class="empty-state">
+    <div
+      v-if="displayedFlights.length === 0"
+      class="empty-state p-8 text-center text-slate-400"
+    >
       <p class="text-slate-400">No flights found</p>
     </div>
   </div>
@@ -120,27 +125,27 @@ const selectFlight = (flightId: string) => {
 </script>
 
 <style scoped>
-.flight-table-container {
+/* .flight-table-container {
   @apply glass-panel flex flex-col;
-}
+} */
 
-.table-header-section {
+/* .table-header-section {
   @apply flex items-center justify-between p-4 border-b border-slate-700/30;
-}
+} */
 
-.search-box {
+/* .search-box {
   @apply flex-1 max-w-xs ml-4;
-}
+} */
 
-.table-wrapper {
+/* .table-wrapper {
   @apply overflow-x-auto flex-1;
-}
+} */
 
-.table-row {
+/* .table-row {
   @apply border-b border-slate-700/20;
-}
+} */
 
-.empty-state {
+/* .empty-state {
   @apply p-8 text-center text-slate-400;
-}
+} */
 </style>
