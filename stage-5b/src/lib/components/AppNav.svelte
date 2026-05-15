@@ -75,14 +75,7 @@
 				<Download size={16} aria-hidden="true" />
 				Resume
 			</a>
-			<!-- <button
-				type="button"
-				class="grid size-10 place-items-center rounded-full border border-ink/10 bg-white/70 text-ink transition hover:-translate-y-0.5 dark:border-white/10 dark:bg-white/10 dark:text-mist"
-				aria-label="Open command palette"
-				onclick={onCommand}
-			>
-				<Command size={18} aria-hidden="true" />
-			</button> -->
+			
 			<button
 				type="button"
 				class="group/command relative grid size-10 place-items-center rounded-full border border-ink/10 bg-white/70 text-ink transition hover:-translate-y-0.5 dark:border-white/10 dark:bg-white/10 dark:text-mist"
