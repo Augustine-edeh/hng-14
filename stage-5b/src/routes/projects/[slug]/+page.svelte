@@ -28,7 +28,7 @@
 
 		<section class="mt-8 grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
 			<div>
-				<p class="text-sm font-black uppercase tracking-[0.22em] text-emerald-700 dark:text-limebeam">
+				<p class="text-sm font-black uppercase tracking-[0.22em] text-sky-600 dark:text-limebeam">
 					{project.category} / {project.year}
 				</p>
 				<h1 class="mt-4 text-4xl font-black leading-tight sm:text-6xl">{project.title}</h1>
@@ -82,7 +82,7 @@
 		<section class="mt-12 grid gap-4 sm:grid-cols-3">
 			{#each project.metrics as metric}
 				<div class="rounded-[1.5rem] border border-ink/10 bg-white/70 p-5 text-center dark:border-white/10 dark:bg-white/5">
-					<p class="text-3xl font-black text-emerald-700 dark:text-limebeam">{metric.value}</p>
+					<p class="text-3xl font-black text-sky-600 dark:text-limebeam">{metric.value}</p>
 					<p class="mt-2 text-xs font-black uppercase tracking-[0.2em] text-ink/50 dark:text-mist/50">{metric.label}</p>
 				</div>
 			{/each}

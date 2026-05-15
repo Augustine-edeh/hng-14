@@ -16,7 +16,7 @@
 				<article class="grid gap-4 rounded-[1.5rem] border border-ink/10 bg-white/70 p-5 shadow-sm dark:border-white/10 dark:bg-white/5 sm:grid-cols-[7rem_1fr] sm:p-6">
 					<div class="relative">
 						<span class="hidden absolute left-0 top-1 size-8 -translate-x-[1.45rem] rounded-full border-4 border-mist bg-seaglass dark:border-void sm:block"></span>
-						<p class="text-sm font-black uppercase tracking-[0.2em] text-emerald-700 dark:text-limebeam">{item.year}</p>
+						<p class="text-sm font-black uppercase tracking-[0.2em] text-sky-600 dark:text-limebeam">{item.year}</p>
 					</div>
 					<div>
 						<h3 class="text-xl font-black text-ink dark:text-mist">{item.title}</h3>

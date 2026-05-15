@@ -63,7 +63,7 @@
 				<label class="grid gap-2 text-sm font-black text-ink dark:text-mist">
 					Name
 					<input
-						class="rounded-2xl border border-ink/10 bg-white px-4 py-3 font-semibold text-ink outline-none transition focus:border-emerald-700 dark:border-white/10 dark:bg-void dark:text-mist"
+						class="rounded-2xl border border-ink/10 bg-white px-4 py-3 font-semibold text-ink outline-none transition focus:border-sky-600 dark:border-white/10 dark:bg-void dark:text-mist"
 						bind:value={name}
 						autocomplete="name"
 						maxlength="80"
@@ -73,7 +73,7 @@
 				<label class="grid gap-2 text-sm font-black text-ink dark:text-mist">
 					Email
 					<input
-						class="rounded-2xl border border-ink/10 bg-white px-4 py-3 font-semibold text-ink outline-none transition focus:border-emerald-700 dark:border-white/10 dark:bg-void dark:text-mist"
+						class="rounded-2xl border border-ink/10 bg-white px-4 py-3 font-semibold text-ink outline-none transition focus:border-sky-600 dark:border-white/10 dark:bg-void dark:text-mist"
 						bind:value={email}
 						type="email"
 						autocomplete="email"
@@ -85,7 +85,7 @@
 			<label class="grid gap-2 text-sm font-black text-ink dark:text-mist">
 				Message
 				<textarea
-					class="min-h-40 resize-y rounded-2xl border border-ink/10 bg-white px-4 py-3 font-semibold text-ink outline-none transition focus:border-emerald-700 dark:border-white/10 dark:bg-void dark:text-mist"
+					class="min-h-40 resize-y rounded-2xl border border-ink/10 bg-white px-4 py-3 font-semibold text-ink outline-none transition focus:border-sky-600 dark:border-white/10 dark:bg-void dark:text-mist"
 					bind:value={message}
 					maxlength="700"
 					required
@@ -97,7 +97,7 @@
 				</p>
 			{/if}
 			{#if status === 'success'}
-				<p class="flex items-center gap-2 rounded-2xl bg-seaglass/14 px-4 py-3 text-sm font-bold text-emerald-900 dark:text-seaglass" role="status">
+				<p class="flex items-center gap-2 rounded-2xl bg-seaglass/14 px-4 py-3 text-sm font-bold text-blue-950 dark:text-seaglass" role="status">
 					<CheckCircle2 size={17} aria-hidden="true" /> Mail app opened with a sanitized draft.
 				</p>
 			{/if}

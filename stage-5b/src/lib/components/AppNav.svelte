@@ -30,7 +30,7 @@
 	$effect(() => {
 		if (!browser) return;
 		const stored = localStorage.getItem('theme');
-		applyTheme(stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches);
+		applyTheme(stored ? stored === 'dark' : true);
 	});
 </script>
 
@@ -70,7 +70,7 @@
 		<div class="flex items-center gap-2">
 			<a
 				href={profile.resumeUrl}
-				class="hidden items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm font-black text-mist transition hover:-translate-y-0.5 hover:bg-emerald-950 dark:bg-limebeam dark:text-ink sm:flex"
+				class="hidden items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm font-black text-mist transition hover:-translate-y-0.5 hover:bg-blue-950 dark:bg-limebeam dark:text-ink sm:flex"
 			>
 				<Download size={16} aria-hidden="true" />
 				Resume

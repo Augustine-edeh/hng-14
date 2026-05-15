@@ -19,7 +19,7 @@
 <section {id} class={`px-4 py-16 sm:px-6 sm:py-24 lg:px-8 ${className}`}>
 	<div class="mx-auto max-w-7xl">
 		<div class="max-w-3xl">
-			<p class="text-sm font-bold uppercase tracking-[0.24em] text-emerald-700 dark:text-limebeam">
+			<p class="text-sm font-bold uppercase tracking-[0.24em] text-sky-600 dark:text-limebeam">
 				{kicker}
 			</p>
 			<h2 class="mt-3 text-3xl font-black text-ink sm:text-5xl dark:text-mist">{title}</h2>

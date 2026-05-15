@@ -19,7 +19,7 @@
 	aria-label="Introductory portfolio hero"
 >
 	<div
-		class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_var(--x)_var(--y),rgba(183,255,90,0.35),transparent_28%),linear-gradient(135deg,#eef7f1_0%,#d7f4e9_42%,#fff6d2_100%)] dark:bg-[radial-gradient(circle_at_var(--x)_var(--y),rgba(64,230,192,0.22),transparent_28%),linear-gradient(135deg,#06110f_0%,#10251e_48%,#1f2114_100%)]"
+		class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_var(--x)_var(--y),rgba(56,189,248,0.32),transparent_28%),linear-gradient(135deg,#eef7ff_0%,#dbeafe_42%,#bfdbfe_100%)] dark:bg-[radial-gradient(circle_at_var(--x)_var(--y),rgba(56,189,248,0.24),transparent_28%),linear-gradient(135deg,#050b18_0%,#0b1d3a_48%,#102a54_100%)]"
 		style={`--x:${pointerX}%; --y:${pointerY}%`}
 	></div>
 	<div class="absolute inset-x-0 top-24 -z-10 h-px bg-ink/10 dark:bg-white/10"></div>
@@ -46,7 +46,7 @@
 				class="mt-6 text-5xl font-black leading-[0.95] text-ink sm:text-7xl lg:text-8xl dark:text-mist"
 			>
 				{profile.name}
-				<span class="block text-3xl text-emerald-700 sm:text-5xl lg:text-6xl dark:text-limebeam">
+				<span class="block text-3xl text-sky-600 sm:text-5xl lg:text-6xl dark:text-limebeam">
 					{profile.role}
 				</span>
 			</h1>
