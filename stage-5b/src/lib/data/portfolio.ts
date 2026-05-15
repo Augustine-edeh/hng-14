@@ -19,7 +19,7 @@ export const profile = {
   tagline:
     "I build fast, expressive web experiences where motion, clarity, and product thinking meet.",
   email: "info.augustinesedeh@gmail.com",
-  resumeUrl: "/resume.pdf",
+  resumeUrl: "/Augustine Edeh_resume.pdf",
   socials: [
     { label: "GitHub", href: "https://github.com/Augustine-edeh" },
     { label: "LinkedIn", href: "https://www.linkedin.com/in/augustine-edeh" },
