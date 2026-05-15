@@ -1,139 +1,129 @@
 export type Project = {
-	slug: string;
-	title: string;
-	category: 'Product' | 'AI' | 'Data' | 'Experience';
-	description: string;
-	impact: string;
-	technologies: string[];
-	liveUrl: string;
-	githubUrl: string;
-	year: string;
-	accent: string;
-	metrics: { label: string; value: string }[];
-	screens: string[];
+  slug: string;
+  title: string;
+  category: "Client Project" | "Passion Project";
+  description: string;
+  impact: string;
+  technologies: string[];
+  liveUrl: string;
+  githubUrl: string;
+  year: string;
+  accent: string;
+  metrics: { label: string; value: string }[];
+  screens: string[];
 };
 
 export const profile = {
-	name: 'Augustine Chukwu',
-	role: 'Frontend Engineer',
-	tagline: 'I build fast, expressive web experiences where motion, clarity, and product thinking meet.',
-	email: 'hello@augustine.dev',
-	resumeUrl: '/resume.pdf',
-	socials: [
-		{ label: 'GitHub', href: 'https://github.com/augustine' },
-		{ label: 'LinkedIn', href: 'https://www.linkedin.com/in/augustine' },
-		{ label: 'Twitter', href: 'https://x.com/augustine' }
-	]
+  name: "Augustine Edeh",
+  role: "Frontend Engineer",
+  tagline:
+    "I build fast, expressive web experiences where motion, clarity, and product thinking meet.",
+  email: "info.augustinesedeh@gmail.com",
+  resumeUrl: "/Augustine Edeh_resume.pdf",
+  socials: [
+    { label: "GitHub", href: "https://github.com/Augustine-edeh" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/augustine-edeh" },
+  ],
 };
 
 export const projects: Project[] = [
-	{
-		slug: 'orbit-bank',
-		title: 'Orbit Bank Console',
-		category: 'Product',
-		description:
-			'A real-time fintech operations dashboard with risk queues, transaction intelligence, and calm high-density workflows.',
-		impact: 'Reduced support triage time by 38% through contextual queueing and keyboard-first investigation flows.',
-		technologies: ['SvelteKit', 'TypeScript', 'TailwindCSS', 'Web Workers', 'IndexedDB'],
-		liveUrl: 'https://example.com/orbit-bank',
-		githubUrl: 'https://github.com/augustine/orbit-bank',
-		year: '2026',
-		accent: 'from-seaglass to-limebeam',
-		metrics: [
-			{ label: 'LCP', value: '1.1s' },
-			{ label: 'Queues', value: '12' },
-			{ label: 'A11y', value: '100' }
-		],
-		screens: ['Risk radar', 'Transaction graph', 'Agent workspace']
-	},
-	{
-		slug: 'scribe-ai',
-		title: 'Scribe AI Workspace',
-		category: 'AI',
-		description:
-			'An AI writing cockpit with prompt branching, citation review, model routing, and collaborative editing.',
-		impact: 'Helped content teams compare model output and ship reviewed drafts with source confidence indicators.',
-		technologies: ['SvelteKit', 'Streaming UI', 'TailwindCSS', 'Server Actions', 'Zod'],
-		liveUrl: 'https://example.com/scribe-ai',
-		githubUrl: 'https://github.com/augustine/scribe-ai',
-		year: '2026',
-		accent: 'from-voltage to-coral',
-		metrics: [
-			{ label: 'Latency', value: '-44%' },
-			{ label: 'Flows', value: '8' },
-			{ label: 'Tokens', value: 'Live' }
-		],
-		screens: ['Prompt branches', 'Citation rail', 'Draft compare']
-	},
-	{
-		slug: 'atlas-field',
-		title: 'Atlas Field OS',
-		category: 'Data',
-		description:
-			'A mobile-first logistics map for dispatchers and riders with offline state recovery and route health signals.',
-		impact: 'Kept critical route updates usable on unstable networks with optimistic updates and queue replay.',
-		technologies: ['Svelte', 'TailwindCSS', 'PWA', 'Service Worker', 'Map UI'],
-		liveUrl: 'https://example.com/atlas-field',
-		githubUrl: 'https://github.com/augustine/atlas-field',
-		year: '2025',
-		accent: 'from-limebeam to-voltage',
-		metrics: [
-			{ label: 'Offline', value: 'Ready' },
-			{ label: 'Bundle', value: '86kb' },
-			{ label: 'Routes', value: '240+' }
-		],
-		screens: ['Dispatch map', 'Route timeline', 'Offline queue']
-	},
-	{
-		slug: 'signal-lab',
-		title: 'Signal Lab',
-		category: 'Experience',
-		description:
-			'A cinematic portfolio-grade experiment suite for audio-reactive cards, command navigation, and tactile UI states.',
-		impact: 'Explored performant motion systems with reduced-motion fallbacks and GPU-friendly transforms.',
-		technologies: ['Svelte 5', 'Runes', 'TailwindCSS', 'Canvas', 'View Transitions'],
-		liveUrl: 'https://example.com/signal-lab',
-		githubUrl: 'https://github.com/augustine/signal-lab',
-		year: '2026',
-		accent: 'from-coral to-seaglass',
-		metrics: [
-			{ label: 'FPS', value: '60' },
-			{ label: 'Modes', value: '5' },
-			{ label: 'Motion', value: 'Safe' }
-		],
-		screens: ['Audio cards', 'Command deck', 'Motion lab']
-	}
+  {
+    slug: "18-04-unisex-salon",
+    title: "18-04 Unisex Salon",
+    category: "Client Project",
+    description:
+      "A full-featured salon booking platform built for a Lagos-based unisex salon, with service selection, appointment scheduling, home service support, a responsive gallery, and an optimised mobile experience.",
+    impact:
+      "Built a polished client booking flow that helps customers move from service discovery to appointment requests with fewer steps.",
+    technologies: [
+      "Next.js",
+      "TypeScript",
+      "Tailwind CSS",
+      "Shadcn/ui",
+      "Formspree",
+    ],
+    liveUrl: "https://18-04salon.vercel.app",
+    githubUrl: "https://github.com/Augustine-edeh/18-04",
+    year: "2026",
+    accent: "from-seaglass to-limebeam",
+    metrics: [
+      { label: "Type", value: "Client" },
+      { label: "Flow", value: "Booking" },
+      { label: "Mobile", value: "Ready" },
+    ],
+    screens: ["Services page", "Booking flow", "Mobile gallery"],
+  },
+  {
+    slug: "fruitstatic-edibles",
+    title: "Fruitstatic Edibles",
+    category: "Client Project",
+    description:
+      "A vibrant website for a creative SME offering fruit platters, smoothies, and event planning, blending e-commerce cues with a service showcase.",
+    impact:
+      "Created a bright, responsive storefront that communicates the brand clearly and makes browsing products and services simple.",
+    technologies: ["Next.js", "TypeScript", "Zustand", "Tailwind CSS"],
+    liveUrl: "https://fruitstatic-edibles.vercel.app/",
+    githubUrl: "https://github.com/Augustine-edeh/fruitstatic-edibles",
+    year: "2026",
+    accent: "from-voltage to-coral",
+    metrics: [
+      { label: "Type", value: "Client" },
+      { label: "State", value: "Zustand" },
+      { label: "Stack", value: "Next" },
+    ],
+    screens: ["Product showcase", "Service sections", "Responsive pages"],
+  },
+  {
+    slug: "tech-care",
+    title: "Tech Care",
+    category: "Passion Project",
+    description:
+      "A healthcare dashboard for managing and visualising patient data, built with a service-based API layer, Zustand global state management, and responsive chart components.",
+    impact:
+      "Turned patient records into a clear dashboard experience with reusable data services and chart-driven health summaries.",
+    technologies: ["React", "TypeScript", "Zustand", "Tailwind CSS"],
+    liveUrl: "https://techcare-247.vercel.app/",
+    githubUrl: "https://github.com/Augustine-edeh/Tech-Care-247",
+    year: "2025",
+    accent: "from-limebeam to-voltage",
+    metrics: [
+      { label: "Type", value: "Build" },
+      { label: "Charts", value: "Live" },
+      { label: "Data", value: "API" },
+    ],
+    screens: ["Patient dashboard", "Health chart", "Patient profile"],
+  },
 ];
 
 export const skills = [
-	'SvelteKit',
-	'Svelte 5 runes',
-	'TypeScript',
-	'TailwindCSS',
-	'Animation systems',
-	'Performance budgets',
-	'Accessibility',
-	'Design systems',
-	'API integration',
-	'Testing strategy',
-	'Progressive enhancement',
-	'Product thinking'
+  "SvelteKit",
+  "Svelte 5 runes",
+  "TypeScript",
+  "TailwindCSS",
+  "Animation systems",
+  "Performance budgets",
+  "Accessibility",
+  "Design systems",
+  "API integration",
+  "Testing strategy",
+  "Progressive enhancement",
+  "Product thinking",
 ];
 
 export const timeline = [
-	{
-		year: 'Now',
-		title: 'Frontend systems for high-trust products',
-		body: 'Designing interfaces that stay responsive under data load, motion, and real user pressure.'
-	},
-	{
-		year: '2025',
-		title: 'Interaction engineering',
-		body: 'Built composable animation patterns, keyboard flows, and resilient optimistic UI primitives.'
-	},
-	{
-		year: '2024',
-		title: 'Product-led frontend',
-		body: 'Shipped dashboards, onboarding flows, and developer tools with a bias for clarity and speed.'
-	}
+  {
+    year: "Now",
+    title: "HNG Internship",
+    body: "Currently building and shipping staged frontend tasks through the HNG program.",
+  },
+  {
+    year: "2025",
+    title: "Interaction engineering",
+    body: "Built composable animation patterns, keyboard flows, and resilient optimistic UI primitives.",
+  },
+  {
+    year: "2024",
+    title: "Product-led frontend",
+    body: "Shipped dashboards, onboarding flows, and developer tools with a bias for clarity and speed.",
+  },
 ];

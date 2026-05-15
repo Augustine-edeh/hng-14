@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-	<title>{project.title} | Augustine Chukwu</title>
+	<title>{project.title} | Augustine Edeh</title>
 	<meta name="description" content={project.description} />
 </svelte:head>
 
@@ -55,9 +55,9 @@
 			<div class={`overflow-hidden rounded-[2rem] bg-gradient-to-br ${project.accent} p-4 shadow-soft`}>
 				<div class="rounded-[1.5rem] border border-white/35 bg-white/65 p-4 backdrop-blur">
 					<div class="mb-4 flex items-center gap-2">
-						<span class="size-3 rounded-full bg-coral"></span>
-						<span class="size-3 rounded-full bg-voltage"></span>
-						<span class="size-3 rounded-full bg-seaglass"></span>
+						<span class="size-3 rounded-full bg-yellow-400"></span>
+						<span class="size-3 rounded-full bg-red-500"></span>
+						<span class="size-3 rounded-full bg-green-500"></span>
 						<span class="ml-auto text-xs font-black uppercase tracking-[0.18em] text-ink/60">case preview</span>
 					</div>
 					<div class="grid gap-3">

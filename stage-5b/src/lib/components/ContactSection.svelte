@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CheckCircle2, Mail, ShieldCheck } from '@lucide/svelte';
+	import { CheckCircle2, Mail } from '@lucide/svelte';
 	import SectionShell from './SectionShell.svelte';
 	import { profile } from '$lib/data/portfolio';
 
@@ -46,10 +46,6 @@
 			<a class="mt-6 inline-flex rounded-full bg-limebeam px-5 py-3 text-sm font-black text-ink" href={`mailto:${profile.email}`}>
 				{profile.email}
 			</a>
-			<div class="mt-8 flex items-center gap-3 rounded-3xl bg-white/8 p-4">
-				<ShieldCheck class="text-seaglass" size={22} aria-hidden="true" />
-				<p class="text-sm font-semibold text-mist/72">No exposed secrets, no hidden third-party form endpoint.</p>
-			</div>
 		</div>
 
 		<form

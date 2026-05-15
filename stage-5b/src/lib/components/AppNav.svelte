@@ -48,7 +48,7 @@
 			<span
 				class="grid size-10 shrink-0 place-items-center rounded-2xl bg-ink text-sm font-black text-limebeam shadow-soft transition group-hover:rotate-6 dark:bg-limebeam dark:text-ink"
 			>
-				AC
+				AE
 			</span>
 			<span class="hidden min-w-0 sm:block">
 				<span class="block text-sm font-black text-ink dark:text-mist">{profile.name}</span>
@@ -75,13 +75,18 @@
 				<Download size={16} aria-hidden="true" />
 				Resume
 			</a>
+			
 			<button
 				type="button"
-				class="grid size-10 place-items-center rounded-full border border-ink/10 bg-white/70 text-ink transition hover:-translate-y-0.5 dark:border-white/10 dark:bg-white/10 dark:text-mist"
+				class="group/command relative grid size-10 place-items-center rounded-full border border-ink/10 bg-white/70 text-ink transition hover:-translate-y-0.5 dark:border-white/10 dark:bg-white/10 dark:text-mist"
 				aria-label="Open command palette"
+				title="Open command center (Command/Ctrl K)"
 				onclick={onCommand}
 			>
 				<Command size={18} aria-hidden="true" />
+				<span class="pointer-events-none absolute right-0 top-12 z-10 hidden w-max rounded-full bg-ink px-3 py-1.5 text-xs font-black text-mist opacity-0 shadow-soft transition group-hover/command:block group-hover/command:opacity-100 group-focus-visible/command:block group-focus-visible/command:opacity-100 dark:bg-mist dark:text-ink">
+					Command/Ctrl K
+				</span>
 			</button>
 			<button
 				type="button"
