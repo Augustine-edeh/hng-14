@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowRight, BriefcaseBusiness, Code2, Mail, MousePointer2 } from '@lucide/svelte';
+	import { ArrowRight, BriefcaseBusiness, Code2, Mail } from '@lucide/svelte';
 	import { fly, scale } from 'svelte/transition';
 	import { profile, skills } from '$lib/data/portfolio';
 
@@ -107,9 +107,9 @@
 				class="relative overflow-hidden rounded-[2rem] border border-ink/10 bg-ink p-3 shadow-soft dark:border-white/10 dark:bg-white/10"
 			>
 				<div class="flex items-center gap-2 border-b border-white/10 px-2 pb-3">
-					<span class="size-3 rounded-full bg-coral"></span>
-					<span class="size-3 rounded-full bg-voltage"></span>
-					<span class="size-3 rounded-full bg-seaglass"></span>
+					<span class="size-3 rounded-full bg-yellow-400"></span>
+					<span class="size-3 rounded-full bg-red-500"></span>
+					<span class="size-3 rounded-full bg-green-500"></span>
 					<span class="ml-auto rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-mist/70">
 						live-system.svelte
 					</span>
@@ -142,15 +142,6 @@
 									{skill}
 								</div>
 							{/each}
-						</div>
-						<div class="absolute bottom-4 left-4 right-4 rounded-2xl bg-ink p-4 text-mist dark:bg-limebeam dark:text-ink">
-							<div class="flex items-center gap-2 text-xs font-black uppercase tracking-[0.18em]">
-								<MousePointer2 size={15} aria-hidden="true" />
-								Cursor-reactive hero
-							</div>
-							<p class="mt-2 text-sm font-semibold opacity-75">
-								Move around the viewport to bend the light field.
-							</p>
 						</div>
 					</div>
 				</div>

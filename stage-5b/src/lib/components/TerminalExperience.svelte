@@ -47,6 +47,9 @@
 >
 	<div class="overflow-hidden rounded-[1.7rem] border border-ink/10 bg-ink shadow-soft dark:border-white/10">
 		<div class="flex items-center gap-3 border-b border-white/10 px-5 py-4">
+			<span class="size-3 rounded-full bg-yellow-400"></span>
+			<span class="size-3 rounded-full bg-red-500"></span>
+			<span class="size-3 rounded-full bg-green-500"></span>
 			<Terminal class="text-limebeam" size={20} aria-hidden="true" />
 			<p class="text-sm font-black text-mist">augustine.dev terminal</p>
 			<p class="ml-auto text-xs font-bold text-mist/45">input sanitized</p>
@@ -59,22 +62,24 @@
 				</div>
 			{/each}
 		</div>
-		<form class="flex gap-2 border-t border-white/10 p-3" onsubmit={(event) => { event.preventDefault(); runCommand(); }}>
+		<form class="border-t border-white/10 p-3" onsubmit={(event) => { event.preventDefault(); runCommand(); }}>
 			<label class="sr-only" for="terminal-input">Terminal command</label>
-			<input
-				id="terminal-input"
-				class="min-w-0 flex-1 rounded-2xl border border-white/10 bg-white/8 px-4 py-3 font-mono text-sm text-mist outline-none placeholder:text-mist/35 focus:border-limebeam"
-				bind:value={input}
-				placeholder="Try help, projects, skills..."
-				autocomplete="off"
-			/>
-			<button
-				type="submit"
-				class="grid size-12 place-items-center rounded-2xl bg-limebeam text-ink transition hover:-translate-y-0.5"
-				aria-label="Run command"
-			>
-				<Send size={18} aria-hidden="true" />
-			</button>
+			<div class="relative">
+				<input
+					id="terminal-input"
+					class="w-full rounded-full border border-white/10 bg-white/8 py-3 pl-4 pr-16 font-mono text-sm text-mist outline-none placeholder:text-mist/35 focus:border-limebeam"
+					bind:value={input}
+					placeholder="Try help, projects, skills..."
+					autocomplete="off"
+				/>
+				<button
+					type="submit"
+					class="absolute right-1.5 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-limebeam text-ink transition hover:scale-105"
+					aria-label="Run command"
+				>
+					<Send size={17} aria-hidden="true" />
+				</button>
+			</div>
 		</form>
 	</div>
 </SectionShell>

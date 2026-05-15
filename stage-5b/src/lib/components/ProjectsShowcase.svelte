@@ -4,7 +4,7 @@
 	import SectionShell from './SectionShell.svelte';
 	import { projects } from '$lib/data/portfolio';
 
-	const filters = ['All', 'Product', 'AI', 'Data', 'Experience'] as const;
+	const filters = ['All', 'Client Project', 'Passion Project'] as const;
 	let selected = $state<(typeof filters)[number]>('All');
 	let filtered = $derived(selected === 'All' ? projects : projects.filter((project) => project.category === selected));
 </script>

@@ -12,7 +12,7 @@
 </script>
 
 <svelte:head>
-	<title>Augustine Chukwu | Interactive Svelte Developer Portfolio</title>
+	<title>Augustine Edeh | Interactive Svelte Developer Portfolio</title>
 	<meta
 		name="description"
 		content="Interactive SvelteKit developer portfolio showcasing projects, frontend systems, animations, accessibility, and performance."
@@ -34,6 +34,5 @@
 <footer class="bg-ink px-4 py-8 text-mist sm:px-6 lg:px-8 dark:bg-black">
 	<div class="mx-auto flex max-w-7xl flex-col gap-3 text-sm font-semibold text-mist/60 sm:flex-row sm:items-center sm:justify-between">
 		<p>Built with SvelteKit, Svelte 5, and TailwindCSS.</p>
-		<p>Performance-minded, keyboard-friendly, motion-aware.</p>
 	</div>
 </footer>
