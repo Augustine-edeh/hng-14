@@ -12,8 +12,8 @@ import {
   VisualMapComponent,
 } from 'echarts/components'
 import type { EChartsOption } from 'echarts'
-import type { ChartMode, OpsPoint } from '../../models/aviation'
-import { formatTime } from '../../lib/utils'
+import type { ChartMode, OpsPoint } from '@/models/aviation'
+import { formatTime } from '@/lib/utils'
 
 use([CanvasRenderer, LineChart, BarChart, GridComponent, TooltipComponent, LegendComponent, DataZoomComponent, VisualMapComponent])
 

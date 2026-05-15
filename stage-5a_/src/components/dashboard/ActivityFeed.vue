@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { AlertTriangle, CheckCircle2, Info, ShieldAlert } from 'lucide-vue-next'
-import type { ActivityEvent } from '../../models/aviation'
-import { formatRelativeAge, formatTime } from '../../lib/utils'
-import AppBadge from '../ui/AppBadge.vue'
-import AppCard from '../ui/AppCard.vue'
+import type { ActivityEvent } from '@/models/aviation'
+import { formatRelativeAge, formatTime } from '@/lib/utils'
+import AppBadge from '@/components/ui/AppBadge.vue'
+import AppCard from '@/components/ui/AppCard.vue'
 
 const props = defineProps<{
   events: ActivityEvent[]
+}>()
+
+defineEmits<{
+  open: [event: ActivityEvent]
 }>()
 
 const visibleEvents = computed(() => props.events.slice(0, 80))
@@ -38,7 +42,11 @@ const icons = {
       <article
         v-for="event in visibleEvents"
         :key="event.id"
-        class="grid grid-cols-[auto_1fr] gap-3 border-b border-[hsl(var(--border)/0.62)] p-4 last:border-0"
+        class="grid cursor-pointer grid-cols-[auto_1fr] gap-3 border-b border-[hsl(var(--border)/0.62)] p-4 transition hover:bg-[hsl(var(--muted)/0.34)] last:border-0"
+        role="button"
+        tabindex="0"
+        @click="$emit('open', event)"
+        @keydown.enter="$emit('open', event)"
       >
         <div
           class="mt-1 rounded-md p-2"

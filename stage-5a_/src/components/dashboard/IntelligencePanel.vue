@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { BrainCircuit, CloudSun, Fuel, ShieldCheck } from 'lucide-vue-next'
-import type { Flight, OpsPoint } from '../../models/aviation'
-import AppBadge from '../ui/AppBadge.vue'
-import AppCard from '../ui/AppCard.vue'
+import type { Flight, OpsPoint } from '@/models/aviation'
+import AppBadge from '@/components/ui/AppBadge.vue'
+import AppCard from '@/components/ui/AppCard.vue'
 
 const props = defineProps<{
   latest: OpsPoint | null

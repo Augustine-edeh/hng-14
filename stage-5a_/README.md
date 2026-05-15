@@ -1,8 +1,8 @@
-# August Air Operations Command
+# AeroPulse Ops
 
-A production-style real-time aviation operations dashboard built with Vue 3, TypeScript, Pinia, ECharts, Tailwind CSS, and shadcn-inspired UI primitives.
+AeroPulse Ops is a production-grade real-time aviation operations intelligence platform built with Vue 3, TypeScript, Vite, TailwindCSS, Pinia, VueUse, Apache ECharts, Lucide Vue icons, and shadcn-vue-inspired component primitives.
 
-The app simulates a modern Airline Operations Control center for **August Air** with live fleet telemetry, performance charts, regional risk monitoring, validated activity events, controls for pausing/filtering the stream, and responsive dark/light theming.
+It is designed as a premium airline operations command center for monitoring active flights, telemetry, delays, aircraft health, airport congestion, weather disruption, operational alerts, and live aviation events.
 
 ## Setup
 
@@ -18,68 +18,94 @@ npm run build
 npm run preview
 ```
 
-## Features
+## Product Experience
 
-- Real-time mocked aviation stream with reconnect backoff and malformed payload rejection.
-- Live line/area chart, bar chart, heatmap, metric cards, flight table, and activity feed.
-- Pause/resume streaming, time range selection, region/severity filters, log search, chart mode switching, dataset toggles, and point inspection.
-- Dark/light theme toggle with persisted preference.
-- Mobile-first responsive layouts for phones, tablets, and wide operations-center screens.
-- Schema validation with Zod and bounded in-memory buffers to prevent runaway growth.
-- Clean component structure with reusable dashboard, chart, and shadcn-style UI components.
+- Premium dark-first airline operations UI with persisted light/dark/system theme behavior.
+- Real-time metric cards for active flights, delays, fleet health, weather risk, alerts, fuel efficiency, maintenance watch, and arrival performance.
+- Smooth ECharts line/area, bar, and heatmap visualizations.
+- Live flight operations table with search/filter context, sticky headers, status badges, and row drill-down.
+- Real-time activity feed with severity indicators, relative timestamps, newest-first ordering, and event detail sheets.
+- Lightweight aviation radar panel with animated aircraft markers, airport congestion indicators, and fullscreen expansion.
+- Fullscreen analytics and sheet-style operational details for metrics, flights, charts, map, and events.
 
 ## Architecture
 
 ```text
 src/
   components/
-    charts/        Reusable ECharts visualizations
-    dashboard/     Dashboard-specific controls, panels, tables, feed
-    ui/            shadcn-inspired primitives
+    charts/        Reusable Apache ECharts visualizations
+    dashboard/     Product-specific dashboard modules and interaction panels
+    ui/            shadcn-vue-inspired primitives
   lib/             Formatting, sanitization, and utility helpers
-  models/          Typed aviation domain models and Zod schemas
-  services/        Real-time stream simulator and resilience logic
-  stores/          Pinia operations store
-  views/           Top-level dashboard composition
+  models/          Typed aviation models and Zod schemas
+  services/        Mock WebSocket-style aviation stream simulator
+  stores/          Pinia state and selectors
+  views/           Top-level application composition
 ```
 
-## State Management Strategy
+Path aliases are configured through `@/*` for scalable imports.
 
-Pinia centralizes streaming state, filters, chart settings, selected inspection data, and connection health. Incoming data is handled through a single `ingest` path, which keeps the UI predictable and makes validation, buffering, and derived metrics easy to reason about.
+## Streaming Architecture
 
-The store exposes computed selectors for filtered chart points, visible flights, filtered activity events, regional summaries, and metric cards. This keeps components mostly presentational and avoids duplicating filtering logic across the app.
+The platform uses a mocked WebSocket-style stream service. It simulates batched aviation operations updates every 3.6 seconds instead of updating charts every second. This keeps the product realistic and stable, closer to an airline control center than a chaotic demo feed.
 
-## Streaming Approach
+Each batch includes:
 
-`AviationStream` simulates a secure airline operations feed using timed batches. Each batch includes:
+- Operational telemetry point
+- Active flight set with position, route, fuel, weather, delay, and maintenance data
+- Airport congestion and weather state
+- Live activity events
 
-- Network operations point
-- Current flight list
-- Recent activity events
+Payloads are validated with Zod before entering application state. Malformed payloads are rejected, stream failures surface in the UI, and reconnect attempts use exponential backoff.
 
-Every payload is validated with Zod before it reaches the store. The simulator occasionally emits malformed data and connection failures so the dashboard demonstrates resilience: bad payloads are rejected, errors are shown in the UI, and reconnect attempts use exponential backoff.
+## State Management
 
-## Rendering Optimization Decisions
+Pinia centralizes stream health, points, flights, airports, events, filters, chart configuration, theme-driven interactions, selected flight/event/metric, and active detail panel state.
 
-- Chart and event buffers are capped (`900` points, `220` events) to avoid unbounded memory growth.
-- Chart datasets use ECharts canvas rendering and `sampling: "lttb"` for smoother large-series rendering.
-- Computed selectors narrow the data sent to each component based on time range and filters.
-- The activity feed renders the newest 80 retained events, keeping DOM size controlled while preserving a larger searchable buffer in state.
-- Stream intervals and reconnect timers are cleaned up when the dashboard unmounts.
-- Components receive only the data they need, and table/feed rows use stable identifiers.
+Computed selectors isolate rendering work:
+
+- Filtered chart points
+- Filtered flights
+- Filtered events
+- Regional summaries
+- Real-time metrics
+
+This keeps components mostly presentational and avoids duplicate filtering logic.
+
+## Rendering and Performance
+
+- Streaming updates are batched every 3.6 seconds.
+- Chart and event buffers are capped to prevent memory growth.
+- ECharts uses canvas rendering and `sampling: "lttb"` for smooth large-series rendering.
+- Activity feed renders a limited visible slice while retaining a larger bounded buffer.
+- Derived data is computed in the store to reduce component churn.
+- Timers and reconnect handlers are cleaned up on unmount.
+- Charts use responsive autoresize and stable dimensions to prevent layout shift.
+
+## Responsiveness
+
+The dashboard is mobile-first:
+
+- Dense desktop grids collapse into readable stacked layouts.
+- Tables use responsive overflow with sticky headers.
+- Charts retain stable heights and touch-friendly interaction.
+- Navigation adapts for small screens.
+- Dialogs and sheets use viewport-aware sizing.
+
+## UI/UX Rationale
+
+The visual system is inspired by Linear, Vercel, Grafana, Bloomberg-style terminals, and modern enterprise aviation tooling. The interface uses dark mode as the primary experience, cyan aviation accents, subtle glass depth, concise typography, high information density, and clear interactive affordances.
+
+Every major operational surface is clickable or expandable so the dashboard feels alive: metrics open analytics, rows open flight details, events open investigation sheets, charts open fullscreen analytics, and the radar expands into a broader traffic view.
 
 ## Security and Stability
 
-- Zod validates all generated payloads at the boundary.
-- External-style message text is sanitized before entering the event feed.
-- No unsafe DOM injection is used.
-- Stream timers and listeners are cleaned up to prevent leaks.
-- Connection failure, reconnecting, paused, loading/empty, and degraded states are represented in UI.
+- Zod validates all stream payloads.
+- Event text is sanitized before display.
+- No unsafe DOM injection.
+- Empty, reconnecting, paused, degraded, and loading states are handled.
+- Intervals and reconnect timers are cleaned up to prevent leaks.
 
 ## Trade-offs
 
-ECharts adds bundle weight, but it provides mature canvas rendering, responsive resizing, smooth interaction, heatmaps, data zoom, and chart extensibility appropriate for a real-time analytics task. For a larger production app, charts could be route-level lazy loaded and split into separate chunks.
-
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+Apache ECharts increases bundle size, but it provides mature real-time canvas charting, responsive resizing, tooltips, heatmaps, and extensibility. In a larger production SaaS app, chart panels would be lazy-loaded by route or panel expansion to split the bundle further.

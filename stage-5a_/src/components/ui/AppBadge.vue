@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { cn } from '../../lib/utils'
-import type { Severity } from '../../models/aviation'
+import { cn } from '@/lib/utils'
+import type { Severity } from '@/models/aviation'
 
 const props = defineProps<{
   tone?: Severity | 'info' | 'muted'

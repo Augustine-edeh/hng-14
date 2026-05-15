@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { ArrowDownRight, ArrowUpRight, type LucideIcon } from 'lucide-vue-next'
-import AppCard from '../ui/AppCard.vue'
+import AppCard from '@/components/ui/AppCard.vue'
 
 const props = defineProps<{
   label: string
@@ -12,11 +12,22 @@ const props = defineProps<{
   icon: LucideIcon
 }>()
 
+defineEmits<{
+  open: []
+}>()
+
 const isPositive = computed(() => (props.inverse ? props.trend <= 0 : props.trend >= 0))
 </script>
 
 <template>
-  <AppCard class="min-h-[138px]">
+  <AppCard
+    class="min-h-[138px] cursor-pointer transition duration-200 hover:-translate-y-0.5 hover:border-[hsl(var(--primary)/0.45)] hover:shadow-2xl"
+    role="button"
+    tabindex="0"
+    @click="$emit('open')"
+    @keydown.enter="$emit('open')"
+    @keydown.space.prevent="$emit('open')"
+  >
     <div class="flex items-start justify-between gap-3">
       <div>
         <p class="text-sm text-[hsl(var(--muted-foreground))]">{{ label }}</p>

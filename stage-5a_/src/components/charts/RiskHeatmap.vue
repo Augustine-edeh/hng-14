@@ -6,7 +6,7 @@ import { CanvasRenderer } from 'echarts/renderers'
 import { HeatmapChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent, VisualMapComponent } from 'echarts/components'
 import type { EChartsOption } from 'echarts'
-import type { Flight } from '../../models/aviation'
+import type { Flight } from '@/models/aviation'
 
 use([CanvasRenderer, HeatmapChart, GridComponent, TooltipComponent, VisualMapComponent])
 

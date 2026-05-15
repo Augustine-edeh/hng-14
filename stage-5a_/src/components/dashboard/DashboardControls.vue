@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Pause, Play, RadioTower, Search, SlidersHorizontal } from 'lucide-vue-next'
-import AppBadge from '../ui/AppBadge.vue'
-import AppButton from '../ui/AppButton.vue'
-import type { ActivityEvent, ChartMode, Region, TimeRange } from '../../models/aviation'
+import AppBadge from '@/components/ui/AppBadge.vue'
+import AppButton from '@/components/ui/AppButton.vue'
+import type { ActivityEvent, ChartMode, Region, TimeRange } from '@/models/aviation'
 
 defineProps<{
   status: string

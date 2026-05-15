@@ -1,8 +1,18 @@
 import { computed, ref, shallowRef } from 'vue'
 import { defineStore } from 'pinia'
-import { AviationStream } from '../services/aviationStream'
-import type { ActivityEvent, ChartMode, Flight, OpsPoint, Region, StreamHealth, StreamPayload, TimeRange } from '../models/aviation'
-import { average } from '../lib/utils'
+import { AviationStream } from '@/services/aviationStream'
+import type {
+  ActivityEvent,
+  Airport,
+  ChartMode,
+  Flight,
+  OpsPoint,
+  Region,
+  StreamHealth,
+  StreamPayload,
+  TimeRange,
+} from '@/models/aviation'
+import { average } from '@/lib/utils'
 
 const pointLimit = 900
 const eventLimit = 220
@@ -17,6 +27,7 @@ export const useOpsStore = defineStore('ops', () => {
   const stream = shallowRef<AviationStream | null>(null)
   const points = shallowRef<OpsPoint[]>([])
   const flights = shallowRef<Flight[]>([])
+  const airports = shallowRef<Airport[]>([])
   const events = shallowRef<ActivityEvent[]>([])
   const selectedRegion = ref<Region | 'All'>('All')
   const selectedSeverity = ref<ActivityEvent['severity'] | 'All'>('All')
@@ -30,6 +41,10 @@ export const useOpsStore = defineStore('ops', () => {
     passengerLoad: true,
   })
   const inspectedPoint = ref<OpsPoint | null>(null)
+  const selectedFlight = ref<Flight | null>(null)
+  const selectedEvent = ref<ActivityEvent | null>(null)
+  const activePanel = ref<'metric' | 'chart' | 'flight' | 'event' | 'map' | null>(null)
+  const activeMetric = ref<string | null>(null)
   const health = ref<StreamHealth>({
     status: 'connecting',
     lastMessageAt: null,
@@ -83,7 +98,11 @@ export const useOpsStore = defineStore('ops', () => {
       delayMinutes: latest?.delayMinutes ?? 0,
       avgPassengerLoad: average(trendBase.map((point) => point.passengerLoad)),
       activeFlights: filteredFlights.value.length,
+      delayedFlights: flights.value.filter((flight) => flight.delayStatus === 'Major delay' || flight.delayStatus === 'Minor delay').length,
+      weatherRisk: average(airports.value.map((airport) => airport.weather === 'Clear' ? 16 : airport.weather === 'Rain' ? 42 : airport.weather === 'Storm Cell' ? 88 : 64)),
+      aircraftInMaintenance: flights.value.filter((flight) => flight.maintenanceAlerts.length > 0).length,
       criticalEvents: events.value.filter((event) => event.severity === 'critical').length,
+      activeAlerts: events.value.filter((event) => event.severity !== 'normal').length,
     }
   })
 
@@ -106,6 +125,7 @@ export const useOpsStore = defineStore('ops', () => {
   function ingest(payload: StreamPayload) {
     points.value = [...points.value, payload.point].slice(-pointLimit)
     flights.value = payload.flights
+    airports.value = payload.airports
     events.value = [...payload.events, ...events.value].slice(0, eventLimit)
     health.value = {
       ...health.value,
@@ -159,9 +179,40 @@ export const useOpsStore = defineStore('ops', () => {
 
   function inspectPoint(point: OpsPoint | null) {
     inspectedPoint.value = point
+    activePanel.value = point ? 'chart' : activePanel.value
+  }
+
+  function openMetric(metric: string) {
+    activeMetric.value = metric
+    activePanel.value = 'metric'
+  }
+
+  function openFlight(flight: Flight) {
+    selectedFlight.value = flight
+    activePanel.value = 'flight'
+  }
+
+  function openEvent(event: ActivityEvent) {
+    selectedEvent.value = event
+    activePanel.value = 'event'
+  }
+
+  function openChart() {
+    activePanel.value = 'chart'
+  }
+
+  function openMap() {
+    activePanel.value = 'map'
+  }
+
+  function closePanel() {
+    activePanel.value = null
   }
 
   return {
+    activeMetric,
+    activePanel,
+    airports,
     chartMode,
     enabledDatasets,
     events,
@@ -176,10 +227,18 @@ export const useOpsStore = defineStore('ops', () => {
     points,
     query,
     regionSummary,
+    selectedEvent,
+    selectedFlight,
     selectedRegion,
     selectedSeverity,
     timeRange,
+    closePanel,
     inspectPoint,
+    openChart,
+    openEvent,
+    openFlight,
+    openMap,
+    openMetric,
     setDataset,
     start,
     stop,

@@ -1,16 +1,18 @@
 import { z } from 'zod'
 import {
   ActivityEventSchema,
+  AirportSchema,
   FlightSchema,
   OpsPointSchema,
   StreamPayloadSchema,
+  type Airport,
   type ActivityEvent,
   type Flight,
   type FlightStatus,
   type Region,
   type StreamPayload,
-} from '../models/aviation'
-import { clamp, sanitizeText } from '../lib/utils'
+} from '@/models/aviation'
+import { clamp, sanitizeText } from '@/lib/utils'
 
 type Listener = (payload: StreamPayload) => void
 type ErrorListener = (error: Error) => void
@@ -21,6 +23,19 @@ const routePairs = ['LOS-ABV', 'LOS-ACC', 'ABV-LHR', 'LOS-DXB', 'KAN-LOS', 'PHC-
 const aircraft = ['A220-300', 'A320neo', 'B737 MAX 8', 'B787-9', 'E195-E2']
 const statuses: FlightStatus[] = ['Boarding', 'Taxi', 'Climb', 'Cruise', 'Descent', 'Approach', 'Landed', 'Delayed']
 const eventSources = ['AOC Dispatch', 'Fleet Health', 'Crew Desk', 'Ground Ops', 'Weather Intel', 'Security Ops']
+const airlines = ['AeroPulse Connect', 'AeroPulse Regional', 'AeroPulse Cargo', 'AeroPulse Express']
+const weatherStates = ['Clear', 'Rain', 'Turbulence', 'Storm Cell', 'Crosswind', 'Low Visibility'] as const
+const airportMeta = [
+  { code: 'LOS', name: 'Murtala Muhammed', city: 'Lagos', region: 'West Africa', lat: 6.58, lon: 3.32 },
+  { code: 'ABV', name: 'Nnamdi Azikiwe', city: 'Abuja', region: 'West Africa', lat: 9.01, lon: 7.27 },
+  { code: 'ACC', name: 'Kotoka', city: 'Accra', region: 'West Africa', lat: 5.6, lon: -0.17 },
+  { code: 'LHR', name: 'Heathrow', city: 'London', region: 'Europe', lat: 51.47, lon: -0.45 },
+  { code: 'DXB', name: 'Dubai Intl', city: 'Dubai', region: 'Middle East', lat: 25.25, lon: 55.36 },
+  { code: 'KAN', name: 'Mallam Aminu Kano', city: 'Kano', region: 'West Africa', lat: 12.05, lon: 8.52 },
+  { code: 'PHC', name: 'Port Harcourt Intl', city: 'Port Harcourt', region: 'West Africa', lat: 5.02, lon: 6.95 },
+  { code: 'JFK', name: 'John F. Kennedy', city: 'New York', region: 'North America', lat: 40.64, lon: -73.78 },
+  { code: 'CPT', name: 'Cape Town Intl', city: 'Cape Town', region: 'Southern Africa', lat: -33.97, lon: 18.6 },
+] as const
 
 function randomBetween(min: number, max: number) {
   return min + Math.random() * (max - min)
@@ -30,27 +45,59 @@ function randomInt(min: number, max: number) {
   return Math.round(randomBetween(min, max))
 }
 
-function pick<T>(items: T[]) {
+function pick<T>(items: readonly T[]) {
   return items[Math.floor(Math.random() * items.length)] ?? items[0]
 }
 
 function makeFlight(index: number, timestamp: number): Flight {
   const status = pick(statuses)
+  const [origin, destination] = pick(routePairs).split('-')
+  const originMeta = airportMeta.find((airport) => airport.code === origin) ?? airportMeta[0]
+  const destinationMeta = airportMeta.find((airport) => airport.code === destination) ?? airportMeta[1]
+  const progress = randomBetween(0.08, 0.92)
   const isGround = status === 'Boarding' || status === 'Taxi' || status === 'Landed' || status === 'Delayed'
   const risk = clamp(randomBetween(5, status === 'Delayed' ? 84 : 54), 0, 100)
+  const eta = randomInt(status === 'Landed' ? -8 : 12, 480)
+  const fuelLevel = clamp(86 - progress * 55 + randomBetween(-8, 10), 8, 98)
+  const route = `${origin}-${destination}`
 
   return FlightSchema.parse({
     id: `AU${String(100 + index).padStart(3, '0')}`,
-    route: pick(routePairs),
+    route,
+    airline: pick(airlines),
+    origin,
+    destination,
     aircraft: pick(aircraft),
     status,
-    region: pick(regions),
+    region: destinationMeta.region,
     altitude: isGround ? randomInt(0, 4500) : randomInt(18000, 41000),
     speed: isGround ? randomInt(0, 120) : randomInt(360, 545),
-    etaMinutes: randomInt(status === 'Landed' ? -8 : 12, 480),
+    heading: randomInt(0, 359),
+    latitude: Number((originMeta.lat + (destinationMeta.lat - originMeta.lat) * progress + randomBetween(-0.65, 0.65)).toFixed(3)),
+    longitude: Number((originMeta.lon + (destinationMeta.lon - originMeta.lon) * progress + randomBetween(-0.65, 0.65)).toFixed(3)),
+    fuelLevel,
+    etaMinutes: eta,
     risk,
+    delayStatus: eta > 70 && risk > 62 ? 'Major delay' : eta > 30 || status === 'Delayed' ? 'Minor delay' : risk < 28 ? 'On time' : 'Recovery',
+    weather: pick(weatherStates),
+    maintenanceAlerts: risk > 72 ? ['Engine vibration trend', 'Hydraulic pressure variance'] : risk > 52 ? ['A-check review pending'] : [],
     updatedAt: timestamp,
   })
+}
+
+function makeAirports(timestamp: number): Airport[] {
+  return airportMeta.map((airport, index) =>
+    AirportSchema.parse({
+      code: airport.code,
+      name: airport.name,
+      city: airport.city,
+      congestion: clamp(42 + Math.sin(timestamp / 40000 + index) * 22 + randomBetween(-8, 12), 8, 98),
+      departures: randomInt(8, 86),
+      arrivals: randomInt(10, 92),
+      weather: pick(weatherStates),
+      delayMinutes: clamp(randomBetween(2, 28) + index * 1.7, 0, 120),
+    }),
+  )
 }
 
 function makeEvent(timestamp: number, flights: Flight[]): ActivityEvent {
@@ -79,6 +126,7 @@ function makeEvent(timestamp: number, flights: Flight[]): ActivityEvent {
 function buildPayload(previousAirborne: number): StreamPayload {
   const timestamp = Date.now()
   const flights = Array.from({ length: 34 }, (_, index) => makeFlight(index, timestamp))
+  const airports = makeAirports(timestamp)
   const airborne = clamp(previousAirborne + randomInt(-4, 5), 48, 118)
   const avgRisk = flights.reduce((sum, flight) => sum + flight.risk, 0) / flights.length
 
@@ -99,6 +147,7 @@ function buildPayload(previousAirborne: number): StreamPayload {
   return StreamPayloadSchema.parse({
     point,
     flights,
+    airports,
     events: Array.from({ length: randomInt(1, 4) }, () => makeEvent(timestamp, flights)),
   })
 }
@@ -132,7 +181,8 @@ export class AviationStream {
     this.clear()
     this.paused = false
     this.emitStatus('connecting')
-    this.timer = window.setInterval(() => this.tick(), 900)
+    this.tick()
+    this.timer = window.setInterval(() => this.tick(), 3600)
     window.setTimeout(() => this.emitStatus('live'), 350)
   }
 

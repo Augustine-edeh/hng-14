@@ -1,23 +1,26 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watchEffect } from 'vue'
+import { usePreferredDark } from '@vueuse/core'
 import { Moon, Sun } from 'lucide-vue-next'
-import AppButton from '../ui/AppButton.vue'
+import AppButton from '@/components/ui/AppButton.vue'
 
-const theme = ref<'dark' | 'light'>('dark')
-const isLight = computed(() => theme.value === 'light')
+const prefersDark = usePreferredDark()
+const theme = ref<'dark' | 'light' | 'system'>('system')
+const resolvedTheme = computed(() => (theme.value === 'system' ? (prefersDark.value ? 'dark' : 'light') : theme.value))
+const isLight = computed(() => resolvedTheme.value === 'light')
 
 onMounted(() => {
   const saved = window.localStorage.getItem('august-air-theme')
-  theme.value = saved === 'light' ? 'light' : 'dark'
+  theme.value = saved === 'light' || saved === 'dark' || saved === 'system' ? saved : 'system'
 })
 
 watchEffect(() => {
-  document.documentElement.classList.toggle('light', isLight.value)
+  document.documentElement.classList.toggle('light', resolvedTheme.value === 'light')
   window.localStorage.setItem('august-air-theme', theme.value)
 })
 
 function toggle() {
-  theme.value = isLight.value ? 'dark' : 'light'
+  theme.value = resolvedTheme.value === 'light' ? 'dark' : 'light'
 }
 </script>
 
