@@ -43,12 +43,14 @@
 
 			<h1
 				in:fly={{ y: 26, duration: 700, delay: 80 }}
-				class="mt-6 text-5xl font-black leading-[0.95] text-ink sm:text-7xl lg:text-8xl dark:text-mist"
+				class="mt-6 text-5xl font-black leading-[1.2] text-ink sm:text-7xl lg:text-7xl dark:text-mist"
 			>
+			<span class=" text-nowrap">
 				{profile.name}
-				<span class="block text-3xl text-sky-600 sm:text-5xl lg:text-6xl dark:text-limebeam">
-					{profile.role}
-				</span>
+			</span>
+			<span class="block text-2xl text-sky-600 sm:text-4xl lg:text-5xl dark:text-limebeam">
+				{profile.role}
+			</span>
 			</h1>
 			<p
 				in:fly={{ y: 24, duration: 680, delay: 160 }}
